@@ -4,251 +4,395 @@
     "name": "Late Smti Synchar Phawa",
     "gender": "F",
     "spouse": "",
-    "parent": ""
+    "parent": "",
+    "bio": "The matriarch and founder of the Phawa Ialih lineage. A woman of great strength and wisdom who laid the foundation for generations to come.",
+    "hobbies": "Traditional weaving, storytelling, gardening",
+    "designation": "Great Great Great Grandmother",
+    "funFact": "Known for her legendary hospitality — no visitor ever left her home without a meal."
   },
   {
     "id": "durka1",
     "name": "Late Smti Durka Phawa",
     "gender": "F",
     "spouse": "Late Shri Het La Dhkar",
-    "parent": "synchar"
+    "parent": "synchar",
+    "bio": "Eldest daughter of Synchar Phawa. Carried forward the matrilineal traditions with grace and dignity.",
+    "hobbies": "Cooking traditional Khasi dishes, singing folk songs",
+    "designation": "Great Great Grandmother",
+    "funFact": "Could cook for 50 people without breaking a sweat during family gatherings."
   },
   {
     "id": "chabi1",
     "name": "Late Shri Chabi Phawa",
     "gender": "M",
     "spouse": "",
-    "parent": "synchar"
+    "parent": "synchar",
+    "bio": "Son of Synchar Phawa. A quiet but dependable figure in the family.",
+    "hobbies": "Farming, woodwork",
+    "designation": "Great Great Granduncle",
+    "funFact": "Built most of the furniture in the family home with his own hands."
   },
   {
     "id": "yata",
     "name": "Late Shri Yata Phawa",
     "gender": "M",
     "spouse": "",
-    "parent": "synchar"
+    "parent": "synchar",
+    "bio": "Son of Synchar Phawa. Known for his jovial nature.",
+    "hobbies": "Fishing, card games",
+    "designation": "Great Great Granduncle",
+    "funFact": "Never lost a game of cards — or so he claimed!"
   },
   {
     "id": "ton",
     "name": "Late Shri Ton Phawa",
     "gender": "M",
     "spouse": "",
-    "parent": "synchar"
+    "parent": "synchar",
+    "bio": "Son of Synchar Phawa. The youngest of the siblings.",
+    "hobbies": "Hunting, storytelling",
+    "designation": "Great Great Granduncle",
+    "funFact": "Had a pet dog that followed him everywhere for 15 years."
   },
   {
     "id": "blit",
     "name": "Late Smti Blit Phawa (Long Ialih)",
     "gender": "F",
     "spouse": "Archie Chyrmang & Phre Shylla",
-    "parent": "durka1"
+    "parent": "durka1",
+    "bio": "Known as Long Ialih, she was the bridge between the old generation and the new. Married twice, she raised a large and loving family.",
+    "hobbies": "Weaving, farming, traditional medicine",
+    "designation": "Great Grandmother",
+    "funFact": "Her nickname 'Long Ialih' came from her unusually tall stature for her time."
   },
   {
     "id": "pila1",
     "name": "Late Shri Pila Phawa",
     "gender": "M",
     "spouse": "",
-    "parent": "durka1"
+    "parent": "durka1",
+    "bio": "Son of Durka Phawa. A hardworking and dedicated family man.",
+    "hobbies": "Agriculture, carpentry",
+    "designation": "Great Granduncle",
+    "funFact": "Could identify every tree in the forest by just looking at its leaf."
   },
   {
     "id": "mison",
     "name": "Late Shri Mison Phawa",
     "gender": "M",
     "spouse": "",
-    "parent": "durka1"
+    "parent": "durka1",
+    "bio": "Son of Durka Phawa. Known for his gentle demeanor.",
+    "hobbies": "Music, farming",
+    "designation": "Great Granduncle",
+    "funFact": "Played the flute so beautifully that birds would gather to listen."
   },
   {
     "id": "min",
     "name": "Late Shri Min Phawa",
     "gender": "M",
     "spouse": "",
-    "parent": "durka1"
+    "parent": "durka1",
+    "bio": "Son of Durka Phawa. The quiet thinker of the family.",
+    "hobbies": "Reading, chess",
+    "designation": "Great Granduncle",
+    "funFact": "Could solve complex math problems mentally before calculators existed."
   },
   {
     "id": "kongka1",
     "name": "Late Smti Kongka Phawa",
     "gender": "F",
     "spouse": "Lakhon Ryngkhlem",
-    "parent": "blit"
+    "parent": "blit",
+    "bio": "Eldest daughter of Blit Phawa. A strong matriarch who continued the family legacy with her husband Lakhon Ryngkhlem.",
+    "hobbies": "Cooking, sewing, community leadership",
+    "designation": "Grandmother",
+    "funFact": "Was the first woman in the village to own a sewing machine."
   },
   {
     "id": "jill",
     "name": "Shri Jill Phawa",
     "gender": "M",
     "spouse": "",
-    "parent": "blit"
+    "parent": "blit",
+    "bio": "Son of Blit Phawa. A dependable and caring brother.",
+    "hobbies": "Sports, farming",
+    "designation": "Granduncle",
+    "funFact": "Won every race at the village sports meet for 5 consecutive years."
   },
   {
     "id": "durka2",
     "name": "Smti Durka Phawa",
     "gender": "F",
     "spouse": "Shri Klori Chyrmang",
-    "parent": "blit"
+    "parent": "blit",
+    "bio": "Daughter of Blit Phawa. Married to Shri Klori Chyrmang, she raised six wonderful children.",
+    "hobbies": "Gardening, cooking, knitting",
+    "designation": "Grandmother",
+    "funFact": "Her garden was so beautiful that people from neighboring villages came to see it."
   },
   {
     "id": "bhom",
     "name": "Late Shri Bhom Phawa",
     "gender": "M",
     "spouse": "",
-    "parent": "blit"
+    "parent": "blit",
+    "bio": "Son of Blit Phawa. Known for his strength and courage.",
+    "hobbies": "Wrestling, hunting",
+    "designation": "Granduncle",
+    "funFact": "Once lifted a fallen tree trunk to save a trapped calf."
   },
   {
     "id": "kalein",
     "name": "Late Shri Kalein Phawa",
     "gender": "M",
     "spouse": "",
-    "parent": "blit"
+    "parent": "blit",
+    "bio": "Son of Blit Phawa. A man of few words but deep wisdom.",
+    "hobbies": "Meditation, nature walks",
+    "designation": "Granduncle",
+    "funFact": "Could predict the weather accurately just by observing cloud patterns."
   },
   {
     "id": "phirik",
     "name": "Shri Phirik Phawa",
     "gender": "M",
     "spouse": "",
-    "parent": "blit"
+    "parent": "blit",
+    "bio": "Son of Blit Phawa. The tech-savvy one of his generation.",
+    "hobbies": "Electronics, radio repair",
+    "designation": "Granduncle",
+    "funFact": "Fixed the village's first radio and became the local 'tech support'."
   },
   {
     "id": "klaw",
     "name": "Smti Klaw Phawa",
     "gender": "F",
     "spouse": "Shri Dawanheipor Shylla",
-    "parent": "blit"
+    "parent": "blit",
+    "bio": "Daughter of Blit Phawa. Married to Shri Dawanheipor Shylla, she raised six children with love and discipline.",
+    "hobbies": "Teaching, embroidery, baking",
+    "designation": "Grandmother",
+    "funFact": "Taught half the children in the village to read and write."
   },
   {
     "id": "healing",
     "name": "Smti Healing Soul Phawa",
     "gender": "F",
     "spouse": "Shwalang Rymbai",
-    "parent": "kongka1"
+    "parent": "kongka1",
+    "bio": "Daughter of Kongka Phawa. Her name reflects her nurturing spirit. Married to Shwalang Rymbai.",
+    "hobbies": "Nursing, herbal medicine, counseling",
+    "designation": "Mother",
+    "funFact": "Her herbal remedies were sought after by people from three neighboring villages."
   },
   {
     "id": "stepping",
     "name": "Shri Stepping Stone Phawa",
     "gender": "M",
     "spouse": "",
-    "parent": "kongka1"
+    "parent": "kongka1",
+    "bio": "Son of Kongka Phawa. A man who believed in paving the way for others.",
+    "hobbies": "Construction, mentoring youth",
+    "designation": "Uncle",
+    "funFact": "Built the first concrete pathway in the village with his own hands."
   },
   {
     "id": "chabi2",
     "name": "Shri Chabi Phawa",
     "gender": "M",
     "spouse": "",
-    "parent": "kongka1"
+    "parent": "kongka1",
+    "bio": "Son of Kongka Phawa. Named after his great-granduncle.",
+    "hobbies": "Farming, football",
+    "designation": "Uncle",
+    "funFact": "Scored the winning goal in the district football championship."
   },
   {
     "id": "damang",
     "name": "Mr. Damang Hiwotmi Phawa",
     "gender": "M",
     "spouse": "",
-    "parent": "kongka1"
+    "parent": "kongka1",
+    "bio": "Son of Kongka Phawa. A modern thinker with traditional roots.",
+    "hobbies": "Photography, travel, blogging",
+    "designation": "Uncle",
+    "funFact": "Has visited 15 states in India and documented each journey."
   },
   {
     "id": "larishisha",
     "name": "Miss Larishisha Ika Phawa",
     "gender": "F",
     "spouse": "",
-    "parent": "kongka1"
+    "parent": "kongka1",
+    "bio": "Daughter of Kongka Phawa. A bright and ambitious young woman.",
+    "hobbies": "Dancing, painting, social media",
+    "designation": "Aunt",
+    "funFact": "Her TikTok dance videos have over 100K views!"
   },
   {
     "id": "kamwamut",
     "name": "Late Mr. Kamwamut Phawa",
     "gender": "M",
     "spouse": "",
-    "parent": "kongka1"
+    "parent": "kongka1",
+    "bio": "Son of Kongka Phawa. Gone too soon but remembered fondly.",
+    "hobbies": "Music, poetry",
+    "designation": "Uncle",
+    "funFact": "Wrote over 50 poems about village life before he turned 25."
   },
   {
     "id": "hilldy",
     "name": "Mr. Hilldy Phawa (Chirup)",
     "gender": "M",
     "spouse": "",
-    "parent": "durka2"
+    "parent": "durka2",
+    "bio": "Son of Durka Phawa. Also known as Chirup Phawa.",
+    "hobbies": "Gaming, coding, tech",
+    "designation": "Uncle",
+    "funFact": "Built his first computer from spare parts at age 14."
   },
   {
     "id": "dawankabhah",
     "name": "Miss Dawankabhah Phawa (Ruit Liek)",
     "gender": "F",
     "spouse": "",
-    "parent": "durka2"
+    "parent": "durka2",
+    "bio": "Daughter of Durka Phawa. Known as Ruit Liek among friends.",
+    "hobbies": "Fashion design, makeup artistry",
+    "designation": "Aunt",
+    "funFact": "Designs traditional Khasi attire with a modern twist."
   },
   {
     "id": "wanmiki",
     "name": "Mr. Wanmiki Phawa (Ma bi)",
     "gender": "M",
     "spouse": "",
-    "parent": "durka2"
+    "parent": "durka2",
+    "bio": "Son of Durka Phawa. Nicknamed Ma bi.",
+    "hobbies": "Cooking, food blogging",
+    "designation": "Uncle",
+    "funFact": "His secret pork recipe is guarded more closely than family heirlooms."
   },
   {
     "id": "lakhon",
     "name": "Mr. Lakhon Phawa",
     "gender": "M",
     "spouse": "",
-    "parent": "durka2"
+    "parent": "durka2",
+    "bio": "Son of Durka Phawa. A calm and collected individual.",
+    "hobbies": "Chess, reading, philosophy",
+    "designation": "Uncle",
+    "funFact": "Can recite passages from the Bhagavad Gita from memory."
   },
   {
     "id": "borlang",
     "name": "Mr. Borlang Phawa (Dell)",
     "gender": "M",
     "spouse": "",
-    "parent": "durka2"
+    "parent": "durka2",
+    "bio": "Son of Durka Phawa. Known as Dell among his tech circle.",
+    "hobbies": "PC building, gaming, streaming",
+    "designation": "Uncle",
+    "funFact": "Has built over 20 custom PCs for friends and family."
   },
   {
     "id": "pila2",
     "name": "Mr. Pila Phawa",
     "gender": "M",
     "spouse": "",
-    "parent": "durka2"
+    "parent": "durka2",
+    "bio": "Son of Durka Phawa. Named after his great-granduncle.",
+    "hobbies": "Football, fitness",
+    "designation": "Uncle",
+    "funFact": "Can do 100 pushups without stopping."
   },
   {
     "id": "shylpha",
     "name": "Miss Shylpha Phawa",
     "gender": "F",
     "spouse": "",
-    "parent": "klaw"
+    "parent": "klaw",
+    "bio": "Daughter of Klaw Phawa. A creative soul with big dreams.",
+    "hobbies": "Singing, songwriting, guitar",
+    "designation": "Aunt",
+    "funFact": "Composed her first song at age 12 and performed it at a school function."
   },
   {
     "id": "ehokmitre",
     "name": "Mr. Ehokmitre D Phawa",
     "gender": "M",
     "spouse": "",
-    "parent": "klaw"
+    "parent": "klaw",
+    "bio": "Son of Klaw Phawa. The 'D' stands for his middle name.",
+    "hobbies": "Basketball, sneakers collection",
+    "designation": "Uncle",
+    "funFact": "Owns over 50 pairs of sneakers and counting."
   },
   {
     "id": "wyrchawmitre",
     "name": "Mr. Wyrchawmitre D Phawa",
     "gender": "M",
     "spouse": "",
-    "parent": "klaw"
+    "parent": "klaw",
+    "bio": "Son of Klaw Phawa. Twin brother of Ehokmitre.",
+    "hobbies": "Basketball, gaming, music production",
+    "designation": "Uncle",
+    "funFact": "Can finish a Rubik's cube in under 2 minutes."
   },
   {
     "id": "lehachwami",
     "name": "Late Mr. Lehachwami Phawa",
     "gender": "M",
     "spouse": "",
-    "parent": "klaw"
+    "parent": "klaw",
+    "bio": "Son of Klaw Phawa. Remembered for his kindness.",
+    "hobbies": "Gardening, bird watching",
+    "designation": "Uncle",
+    "funFact": "Could identify over 100 bird species by their calls alone."
   },
   {
     "id": "dkfami",
     "name": "Miss DK Fami Phawa",
     "gender": "F",
     "spouse": "",
-    "parent": "klaw"
+    "parent": "klaw",
+    "bio": "Daughter of Klaw Phawa. DK stands for her initials.",
+    "hobbies": "Dancing, modeling, photography",
+    "designation": "Aunt",
+    "funFact": "Was crowned Miss Village Festival in 2019."
   },
   {
     "id": "kamjuhbiangki",
     "name": "Mr. Kamjuhbiangki Phawa",
     "gender": "M",
     "spouse": "",
-    "parent": "klaw"
+    "parent": "klaw",
+    "bio": "Son of Klaw Phawa. The youngest of his siblings.",
+    "hobbies": "Skateboarding, street art",
+    "designation": "Uncle",
+    "funFact": "His graffiti art can be seen on several walls in Shillong."
   },
   {
     "id": "kongka2",
     "name": "Miss Kongka Phawa",
     "gender": "F",
     "spouse": "",
-    "parent": "healing"
+    "parent": "healing",
+    "bio": "Daughter of Healing Soul Phawa. Named after her grandmother.",
+    "hobbies": "Studying, debate, public speaking",
+    "designation": "Sister/Cousin",
+    "funFact": "Won the state-level debate competition twice."
   },
   {
     "id": "manha",
     "name": "Mr. Manha-O Phawa (Thor)",
     "gender": "M",
     "spouse": "",
-    "parent": "healing"
+    "parent": "healing",
+    "bio": "Son of Healing Soul Phawa. Known as Thor for his strength and love for Marvel comics.",
+    "hobbies": "Weightlifting, Marvel movies, gaming",
+    "designation": "Brother/Cousin",
+    "funFact": "Can bench press 100kg and has watched every Marvel movie at least 3 times."
   }
 ]
