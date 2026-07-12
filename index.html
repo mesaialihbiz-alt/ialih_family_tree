@@ -12,22 +12,12 @@
             --primary: #1a1a2e;
             --secondary: #16213e;
             --accent-gold: #d4a574;
-            --accent-rose: #c9a0dc;
-            --accent-sky: #7ec8e3;
-            --female-bg: linear-gradient(135deg, #fff0f5 0%, #ffe4ec 100%);
             --female-border: #e8a4c9;
-            --female-glow: rgba(232, 164, 201, 0.3);
-            --male-bg: linear-gradient(135deg, #e8f4f8 0%, #d0e8f0 100%);
             --male-border: #6bb3d9;
-            --male-glow: rgba(107, 179, 217, 0.3);
             --line-color: #8b7355;
             --line-active: #d4a574;
-            --card-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            --card-hover-shadow: 0 8px 40px rgba(0,0,0,0.15);
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: 'Inter', sans-serif;
             background: linear-gradient(180deg, #faf8f5 0%, #f5f0e8 50%, #faf8f5 100%);
@@ -35,8 +25,6 @@
             overflow-x: hidden;
             min-height: 100vh;
         }
-
-        /* Animated header */
         header {
             text-align: center;
             padding: 40px 20px 30px;
@@ -45,7 +33,6 @@
             position: relative;
             overflow: hidden;
         }
-
         header::before {
             content: '';
             position: absolute;
@@ -53,7 +40,6 @@
             background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
             opacity: 0.5;
         }
-
         h1 {
             font-family: 'Cinzel', serif;
             font-size: clamp(1.8rem, 4vw, 3rem);
@@ -62,7 +48,6 @@
             position: relative;
             text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
-
         .tagline {
             font-family: 'Playfair Display', serif;
             font-style: italic;
@@ -71,7 +56,6 @@
             margin-top: 8px;
             letter-spacing: 1px;
         }
-
         .matrilineal-badge {
             display: inline-flex;
             align-items: center;
@@ -86,13 +70,7 @@
             margin-top: 12px;
             color: var(--accent-gold);
         }
-
-        .matrilineal-badge::before {
-            content: '♀';
-            font-size: 1rem;
-        }
-
-        /* Controls */
+        .matrilineal-badge::before { content: '♀'; font-size: 1rem; }
         .controls {
             display: flex;
             justify-content: center;
@@ -106,7 +84,6 @@
             z-index: 100;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
-
         .control-btn {
             padding: 8px 18px;
             border: 1px solid #d4c4b0;
@@ -122,43 +99,27 @@
             align-items: center;
             gap: 6px;
         }
-
         .control-btn:hover {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
             transform: translateY(-1px);
         }
-
         .control-btn.active {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
         }
-
         .legend {
             display: flex;
             gap: 20px;
             align-items: center;
             font-size: 0.8rem;
         }
-
-        .legend-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .legend-dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 3px;
-        }
-
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
         .legend-dot.female { background: var(--female-border); }
         .legend-dot.male { background: var(--male-border); }
-
-        /* Chart container */
         #chart-wrapper {
             width: 100%;
             min-height: 100vh;
@@ -166,19 +127,9 @@
             overflow: auto;
             cursor: grab;
         }
-
         #chart-wrapper:active { cursor: grabbing; }
-
-        #chart-wrapper svg {
-            display: block;
-            margin: 0 auto;
-        }
-
-        /* Node styles */
-        .node-group {
-            cursor: pointer;
-        }
-
+        #chart-wrapper svg { display: block; margin: 0 auto; }
+        .node-group { cursor: pointer; }
         .node-rect {
             fill: white;
             stroke-width: 2px;
@@ -187,22 +138,17 @@
             transition: all 0.3s ease;
             filter: drop-shadow(0 2px 8px rgba(0,0,0,0.08));
         }
-
         .node-group:hover .node-rect {
             filter: drop-shadow(0 6px 20px rgba(0,0,0,0.15));
-            transform: scale(1.02);
         }
-
         .node-rect.female {
             fill: url(#femaleGradient);
             stroke: var(--female-border);
         }
-
         .node-rect.male {
             fill: url(#maleGradient);
             stroke: var(--male-border);
         }
-
         .node-text {
             font-family: 'Inter', sans-serif;
             font-size: 11px;
@@ -210,7 +156,6 @@
             fill: var(--primary);
             pointer-events: none;
         }
-
         .node-spouse {
             font-family: 'Inter', sans-serif;
             font-size: 9px;
@@ -218,23 +163,10 @@
             font-style: italic;
             pointer-events: none;
         }
-
         .node-icon {
             font-size: 14px;
             pointer-events: none;
         }
-
-        .node-generation {
-            font-family: 'Cinzel', serif;
-            font-size: 9px;
-            fill: var(--accent-gold);
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            pointer-events: none;
-        }
-
-        /* Link styles */
         .link {
             fill: none;
             stroke: var(--line-color);
@@ -243,21 +175,12 @@
             opacity: 0.6;
             transition: all 0.3s ease;
         }
-
         .link:hover {
             stroke: var(--line-active);
             stroke-width: 3px;
             opacity: 1;
             stroke-dasharray: none;
         }
-
-        /* Generation labels */
-        .gen-label-bg {
-            fill: rgba(26, 26, 46, 0.9);
-            rx: 20;
-            ry: 20;
-        }
-
         .gen-label-text {
             font-family: 'Cinzel', serif;
             font-size: 11px;
@@ -266,8 +189,6 @@
             text-anchor: middle;
             dominant-baseline: middle;
         }
-
-        /* Tooltip */
         .tooltip {
             position: absolute;
             background: white;
@@ -281,9 +202,7 @@
             z-index: 1000;
             max-width: 250px;
         }
-
         .tooltip.show { opacity: 1; }
-
         .tooltip-name {
             font-family: 'Playfair Display', serif;
             font-weight: 700;
@@ -291,14 +210,11 @@
             color: var(--primary);
             margin-bottom: 4px;
         }
-
         .tooltip-detail {
             font-size: 0.8rem;
             color: #666;
             line-height: 1.5;
         }
-
-        /* Admin panel */
         .admin-toggle {
             position: fixed;
             bottom: 30px;
@@ -318,12 +234,10 @@
             align-items: center;
             justify-content: center;
         }
-
         .admin-toggle:hover {
             transform: scale(1.1) rotate(90deg);
             background: var(--accent-gold);
         }
-
         #admin-panel {
             display: none;
             position: fixed;
@@ -339,17 +253,12 @@
             z-index: 300;
             border: 1px solid #e8e0d4;
         }
-
         #admin-panel h3 {
             font-family: 'Cinzel', serif;
             margin-bottom: 20px;
             color: var(--primary);
         }
-
-        .form-group {
-            margin-bottom: 14px;
-        }
-
+        .form-group { margin-bottom: 14px; }
         .form-group label {
             display: block;
             margin-bottom: 5px;
@@ -357,7 +266,6 @@
             font-size: 0.85rem;
             color: #555;
         }
-
         .form-group input, .form-group select {
             width: 100%;
             padding: 10px 12px;
@@ -367,13 +275,11 @@
             font-size: 0.9rem;
             transition: border-color 0.2s;
         }
-
         .form-group input:focus, .form-group select:focus {
             outline: none;
             border-color: var(--accent-gold);
             box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
         }
-
         .btn-submit {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
@@ -387,12 +293,10 @@
             font-size: 0.9rem;
             transition: all 0.3s;
         }
-
         .btn-submit:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(26, 26, 46, 0.3);
         }
-
         .overlay {
             display: none;
             position: fixed;
@@ -401,7 +305,6 @@
             z-index: 250;
             backdrop-filter: blur(4px);
         }
-
         .close-btn {
             position: absolute;
             top: 15px;
@@ -413,18 +316,13 @@
             color: #999;
             transition: color 0.2s;
         }
-
         .close-btn:hover { color: var(--primary); }
-
-        /* Responsive */
         @media (max-width: 768px) {
             .controls { gap: 8px; padding: 12px; }
             .control-btn { padding: 6px 12px; font-size: 0.75rem; }
             .legend { gap: 12px; }
             #chart-wrapper { padding: 20px 10px; }
         }
-
-        /* Print styles */
         @media print {
             .controls, .admin-toggle, .overlay, #admin-panel { display: none !important; }
             body { background: white; }
@@ -496,16 +394,24 @@
         const generationLabels = {
             0: "Root Ancestor",
             1: "Great Great Grandparents",
-            2: "Great Grandparents", 
+            2: "Great Grandparents",
             3: "Grandparents",
             4: "Parents",
             5: "Current Generation"
         };
 
-        function loadTree() {
-            familyData = [{"id": "synchar", "name": "Late Smti Synchar Phawa", "gender": "F", "spouse": "", "parent": ""}, {"id": "durka1", "name": "Late Smti Durka Phawa", "gender": "F", "spouse": "Late Shri Het La Dhkar", "parent": "synchar"}, {"id": "chabi1", "name": "Late Shri Chabi Phawa", "gender": "M", "spouse": "", "parent": "synchar"}, {"id": "yata", "name": "Late Shri Yata Phawa", "gender": "M", "spouse": "", "parent": "synchar"}, {"id": "ton", "name": "Late Shri Ton Phawa", "gender": "M", "spouse": "", "parent": "synchar"}, {"id": "blit", "name": "Late Smti Blit Phawa (Long Ialih)", "gender": "F", "spouse": "Archie Chyrmang & Phre Shylla", "parent": "durka1"}, {"id": "pila1", "name": "Late Shri Pila Phawa", "gender": "M", "spouse": "", "parent": "durka1"}, {"id": "mison", "name": "Late Shri Mison Phawa", "gender": "M", "spouse": "", "parent": "durka1"}, {"id": "min", "name": "Late Shri Min Phawa", "gender": "M", "spouse": "", "parent": "durka1"}, {"id": "kongka1", "name": "Late Smti Kongka Phawa", "gender": "F", "spouse": "Lakhon Ryngkhlem", "parent": "blit"}, {"id": "jill", "name": "Shri Jill Phawa", "gender": "M", "spouse": "", "parent": "blit"}, {"id": "durka2", "name": "Smti Durka Phawa", "gender": "F", "spouse": "Shri Klori Chyrmang", "parent": "blit"}, {"id": "bhom", "name": "Late Shri Bhom Phawa", "gender": "M", "spouse": "", "parent": "blit"}, {"id": "kalein", "name": "Late Shri Kalein Phawa", "gender": "M", "spouse": "", "parent": "blit"}, {"id": "phirik", "name": "Shri Phirik Phawa", "gender": "M", "spouse": "", "parent": "blit"}, {"id": "klaw", "name": "Smti Klaw Phawa", "gender": "F", "spouse": "Shri Dawanheipor Shylla", "parent": "blit"}, {"id": "healing", "name": "Smti Healing Soul Phawa", "gender": "F", "spouse": "Shwalang Rymbai", "parent": "kongka1"}, {"id": "stepping", "name": "Shri Stepping Stone Phawa", "gender": "M", "spouse": "", "parent": "kongka1"}, {"id": "chabi2", "name": "Shri Chabi Phawa", "gender": "M", "spouse": "", "parent": "kongka1"}, {"id": "damang", "name": "Mr. Damang Hiwotmi Phawa", "gender": "M", "spouse": "", "parent": "kongka1"}, {"id": "larishisha", "name": "Miss Larishisha Ika Phawa", "gender": "F", "spouse": "", "parent": "kongka1"}, {"id": "kamwamut", "name": "Late Mr. Kamwamut Phawa", "gender": "M", "spouse": "", "parent": "kongka1"}, {"id": "hilldy", "name": "Mr. Hilldy Phawa (Chirup)", "gender": "M", "spouse": "", "parent": "durka2"}, {"id": "dawankabhah", "name": "Miss Dawankabhah Phawa (Ruit Liek)", "gender": "F", "spouse": "", "parent": "durka2"}, {"id": "wanmiki", "name": "Mr. Wanmiki Phawa (Ma bi)", "gender": "M", "spouse": "", "parent": "durka2"}, {"id": "lakhon", "name": "Mr. Lakhon Phawa", "gender": "M", "spouse": "", "parent": "durka2"}, {"id": "borlang", "name": "Mr. Borlang Phawa (Dell)", "gender": "M", "spouse": "", "parent": "durka2"}, {"id": "pila2", "name": "Mr. Pila Phawa", "gender": "M", "spouse": "", "parent": "durka2"}, {"id": "shylpha", "name": "Miss Shylpha Phawa", "gender": "F", "spouse": "", "parent": "klaw"}, {"id": "ehokmitre", "name": "Mr. Ehokmitre D Phawa", "gender": "M", "spouse": "", "parent": "klaw"}, {"id": "wyrchawmitre", "name": "Mr. Wyrchawmitre D Phawa", "gender": "M", "spouse": "", "parent": "klaw"}, {"id": "lehachwami", "name": "Late Mr. Lehachwami Phawa", "gender": "M", "spouse": "", "parent": "klaw"}, {"id": "dkfami", "name": "Miss DK Fami Phawa", "gender": "F", "spouse": "", "parent": "klaw"}, {"id": "kamjuhbiangki", "name": "Mr. Kamjuhbiangki Phawa", "gender": "M", "spouse": "", "parent": "klaw"}, {"id": "kongka2", "name": "Miss Kongka Phawa", "gender": "F", "spouse": "", "parent": "healing"}, {"id": "manha", "name": "Mr. Manha-O Phawa (Thor)", "gender": "M", "spouse": "", "parent": "healing"}];
-            renderFlowchart();
-            populateParentSelect();
+        async function loadTree() {
+            try {
+                const response = await fetch('./familyData.json');
+                if (!response.ok) throw new Error('Failed to load');
+                familyData = await response.json();
+                renderFlowchart();
+                populateParentSelect();
+            } catch (err) {
+                console.error("Error loading JSON:", err);
+                document.getElementById('chart-wrapper').innerHTML = 
+                    '<div style="text-align:center;padding:50px;color:#999;"><h3>Loading family data...</h3><p>If this persists, check that familyData.json exists.</p></div>';
+            }
         }
 
         function renderFlowchart() {
@@ -544,7 +450,6 @@
                 .attr("width", chartWidth)
                 .attr("height", chartHeight);
 
-            // Define gradients
             const defs = svg.append("defs");
 
             const femaleGrad = defs.append("linearGradient")
@@ -561,10 +466,8 @@
             maleGrad.append("stop").attr("offset", "0%").attr("stop-color", "#f0f8ff");
             maleGrad.append("stop").attr("offset", "100%").attr("stop-color", "#d6e8f5");
 
-            g = svg.append("g")
-                .attr("transform", `translate(80, 60)`);
+            g = svg.append("g").attr("transform", "translate(80, 60)");
 
-            // Zoom behavior
             zoomBehavior = d3.zoom()
                 .scaleExtent([0.3, 2])
                 .on("zoom", (event) => {
@@ -575,11 +478,9 @@
             svg.call(zoomBehavior)
                .call(zoomBehavior.transform, d3.zoomIdentity.translate(80, 60).scale(currentZoom));
 
-            // Tree layout
             const treeLayout = d3.tree().size([chartHeight - 120, chartWidth - 350]);
             treeLayout(root);
 
-            // Draw links with curved paths
             const linkGen = d3.linkHorizontal()
                 .x(d => d.y)
                 .y(d => d.x);
@@ -589,10 +490,8 @@
                 .enter()
                 .append("path")
                 .attr("class", "link")
-                .attr("d", linkGen)
-                .attr("id", (d, i) => `link-${i}`);
+                .attr("d", linkGen);
 
-            // Draw generation column backgrounds
             const maxDepth = root.height;
             for (let i = 0; i <= maxDepth; i++) {
                 const x = i * levelSpacing - 20;
@@ -605,7 +504,6 @@
                     .attr("rx", 10)
                     .style("pointer-events", "none");
 
-                // Generation label
                 const labelText = generationLabels[i] || `Generation ${i}`;
                 g.append("text")
                     .attr("class", "gen-label-text")
@@ -614,7 +512,6 @@
                     .text(labelText);
             }
 
-            // Draw nodes
             const node = g.selectAll(".node-group")
                 .data(root.descendants())
                 .enter()
@@ -622,10 +519,8 @@
                 .attr("class", "node-group")
                 .attr("transform", d => `translate(${d.y},${d.x - cardHeight/2})`)
                 .on("mouseenter", showTooltip)
-                .on("mouseleave", hideTooltip)
-                .on("click", (event, d) => toggleNode(d));
+                .on("mouseleave", hideTooltip);
 
-            // Node rectangle
             node.append("rect")
                 .attr("class", d => `node-rect ${d.data.gender}`)
                 .attr("width", cardWidth)
@@ -633,7 +528,6 @@
                 .attr("rx", 12)
                 .attr("ry", 12);
 
-            // Gender icon
             node.append("text")
                 .attr("class", "node-icon")
                 .attr("x", 15)
@@ -641,7 +535,6 @@
                 .text(d => d.data.gender === 'F' ? '♀' : '♂')
                 .attr("fill", d => d.data.gender === 'F' ? '#e8a4c9' : '#6bb3d9');
 
-            // Name text
             node.append("text")
                 .attr("class", "node-text")
                 .attr("x", 35)
@@ -651,7 +544,6 @@
                     return name.length > 28 ? name.substring(0, 26) + '...' : name;
                 });
 
-            // Spouse text
             node.append("text")
                 .attr("class", "node-spouse")
                 .attr("x", 35)
@@ -662,7 +554,6 @@
                     return spouse.length > 30 ? '💍 ' + spouse.substring(0, 28) + '...' : '💍 ' + spouse;
                 });
 
-            // Child count badge for nodes with children
             node.filter(d => d.children && d.children.length > 0)
                 .append("circle")
                 .attr("cx", cardWidth - 15)
@@ -701,17 +592,6 @@
             document.getElementById('tooltip').classList.remove('show');
         }
 
-        function toggleNode(d) {
-            if (d.children) {
-                d._children = d.children;
-                d.children = null;
-            } else if (d._children) {
-                d.children = d._children;
-                d._children = null;
-            }
-            renderFlowchart();
-        }
-
         function setView(view) {
             currentView = view;
             document.querySelectorAll('.control-btn').forEach(btn => btn.classList.remove('active'));
@@ -732,15 +612,8 @@
             svg.transition().duration(500).call(zoomBehavior.transform, d3.zoomIdentity.translate(80, 60).scale(1));
         }
 
-        function expandAll() {
-            // Reset all collapsed nodes
-            renderFlowchart();
-        }
-
-        function collapseAll() {
-            // Collapse all except root
-            renderFlowchart();
-        }
+        function expandAll() { renderFlowchart(); }
+        function collapseAll() { renderFlowchart(); }
 
         function populateParentSelect() {
             const select = document.getElementById('parent-select');
@@ -777,7 +650,6 @@
             const newMember = { id, name, gender, spouse: spouse || "", parent };
             familyData.push(newMember);
 
-            // Download the updated JSON
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(familyData, null, 2));
             const downloadAnchor = document.createElement('a');
             downloadAnchor.setAttribute("href", dataStr);
@@ -790,10 +662,9 @@
             populateParentSelect();
             document.getElementById('member-form').reset();
             toggleAdmin();
-            alert("New member added! The updated familyData.json has been downloaded.\n\nTo save permanently, you need to update the file on GitHub and redeploy.");
+            alert("New member added! Updated familyData.json downloaded. Update GitHub to save permanently.");
         }
 
-        // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 document.getElementById('admin-panel').style.display = 'none';
