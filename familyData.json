@@ -1,0 +1,254 @@
+[
+  {
+    "id": "synchar",
+    "name": "Late Smti Synchar Phawa",
+    "gender": "F",
+    "spouse": "",
+    "parent": ""
+  },
+  {
+    "id": "durka1",
+    "name": "Late Smti Durka Phawa",
+    "gender": "F",
+    "spouse": "Late Shri Het La Dhkar",
+    "parent": "synchar"
+  },
+  {
+    "id": "chabi1",
+    "name": "Late Shri Chabi Phawa",
+    "gender": "M",
+    "spouse": "",
+    "parent": "synchar"
+  },
+  {
+    "id": "yata",
+    "name": "Late Shri Yata Phawa",
+    "gender": "M",
+    "spouse": "",
+    "parent": "synchar"
+  },
+  {
+    "id": "ton",
+    "name": "Late Shri Ton Phawa",
+    "gender": "M",
+    "spouse": "",
+    "parent": "synchar"
+  },
+  {
+    "id": "blit",
+    "name": "Late Smti Blit Phawa (Long Ialih)",
+    "gender": "F",
+    "spouse": "Archie Chyrmang & Phre Shylla",
+    "parent": "durka1"
+  },
+  {
+    "id": "pila1",
+    "name": "Late Shri Pila Phawa",
+    "gender": "M",
+    "spouse": "",
+    "parent": "durka1"
+  },
+  {
+    "id": "mison",
+    "name": "Late Shri Mison Phawa",
+    "gender": "M",
+    "spouse": "",
+    "parent": "durka1"
+  },
+  {
+    "id": "min",
+    "name": "Late Shri Min Phawa",
+    "gender": "M",
+    "spouse": "",
+    "parent": "durka1"
+  },
+  {
+    "id": "kongka1",
+    "name": "Late Smti Kongka Phawa",
+    "gender": "F",
+    "spouse": "Lakhon Ryngkhlem",
+    "parent": "blit"
+  },
+  {
+    "id": "jill",
+    "name": "Shri Jill Phawa",
+    "gender": "M",
+    "spouse": "",
+    "parent": "blit"
+  },
+  {
+    "id": "durka2",
+    "name": "Smti Durka Phawa",
+    "gender": "F",
+    "spouse": "Shri Klori Chyrmang",
+    "parent": "blit"
+  },
+  {
+    "id": "bhom",
+    "name": "Late Shri Bhom Phawa",
+    "gender": "M",
+    "spouse": "",
+    "parent": "blit"
+  },
+  {
+    "id": "kalein",
+    "name": "Late Shri Kalein Phawa",
+    "gender": "M",
+    "spouse": "",
+    "parent": "blit"
+  },
+  {
+    "id": "phirik",
+    "name": "Shri Phirik Phawa",
+    "gender": "M",
+    "spouse": "",
+    "parent": "blit"
+  },
+  {
+    "id": "klaw",
+    "name": "Smti Klaw Phawa",
+    "gender": "F",
+    "spouse": "Shri Dawanheipor Shylla",
+    "parent": "blit"
+  },
+  {
+    "id": "healing",
+    "name": "Smti Healing Soul Phawa",
+    "gender": "F",
+    "spouse": "Shwalang Rymbai",
+    "parent": "kongka1"
+  },
+  {
+    "id": "stepping",
+    "name": "Shri Stepping Stone Phawa",
+    "gender": "M",
+    "spouse": "",
+    "parent": "kongka1"
+  },
+  {
+    "id": "chabi2",
+    "name": "Shri Chabi Phawa",
+    "gender": "M",
+    "spouse": "",
+    "parent": "kongka1"
+  },
+  {
+    "id": "damang",
+    "name": "Mr. Damang Hiwotmi Phawa",
+    "gender": "M",
+    "spouse": "",
+    "parent": "kongka1"
+  },
+  {
+    "id": "larishisha",
+    "name": "Miss Larishisha Ika Phawa",
+    "gender": "F",
+    "spouse": "",
+    "parent": "kongka1"
+  },
+  {
+    "id": "kamwamut",
+    "name": "Late Mr. Kamwamut Phawa",
+    "gender": "M",
+    "spouse": "",
+    "parent": "kongka1"
+  },
+  {
+    "id": "hilldy",
+    "name": "Mr. Hilldy Phawa (Chirup)",
+    "gender": "M",
+    "spouse": "",
+    "parent": "durka2"
+  },
+  {
+    "id": "dawankabhah",
+    "name": "Miss Dawankabhah Phawa (Ruit Liek)",
+    "gender": "F",
+    "spouse": "",
+    "parent": "durka2"
+  },
+  {
+    "id": "wanmiki",
+    "name": "Mr. Wanmiki Phawa (Ma bi)",
+    "gender": "M",
+    "spouse": "",
+    "parent": "durka2"
+  },
+  {
+    "id": "lakhon",
+    "name": "Mr. Lakhon Phawa",
+    "gender": "M",
+    "spouse": "",
+    "parent": "durka2"
+  },
+  {
+    "id": "borlang",
+    "name": "Mr. Borlang Phawa (Dell)",
+    "gender": "M",
+    "spouse": "",
+    "parent": "durka2"
+  },
+  {
+    "id": "pila2",
+    "name": "Mr. Pila Phawa",
+    "gender": "M",
+    "spouse": "",
+    "parent": "durka2"
+  },
+  {
+    "id": "shylpha",
+    "name": "Miss Shylpha Phawa",
+    "gender": "F",
+    "spouse": "",
+    "parent": "klaw"
+  },
+  {
+    "id": "ehokmitre",
+    "name": "Mr. Ehokmitre D Phawa",
+    "gender": "M",
+    "spouse": "",
+    "parent": "klaw"
+  },
+  {
+    "id": "wyrchawmitre",
+    "name": "Mr. Wyrchawmitre D Phawa",
+    "gender": "M",
+    "spouse": "",
+    "parent": "klaw"
+  },
+  {
+    "id": "lehachwami",
+    "name": "Late Mr. Lehachwami Phawa",
+    "gender": "M",
+    "spouse": "",
+    "parent": "klaw"
+  },
+  {
+    "id": "dkfami",
+    "name": "Miss DK Fami Phawa",
+    "gender": "F",
+    "spouse": "",
+    "parent": "klaw"
+  },
+  {
+    "id": "kamjuhbiangki",
+    "name": "Mr. Kamjuhbiangki Phawa",
+    "gender": "M",
+    "spouse": "",
+    "parent": "klaw"
+  },
+  {
+    "id": "kongka2",
+    "name": "Miss Kongka Phawa",
+    "gender": "F",
+    "spouse": "",
+    "parent": "healing"
+  },
+  {
+    "id": "manha",
+    "name": "Mr. Manha-O Phawa (Thor)",
+    "gender": "M",
+    "spouse": "",
+    "parent": "healing"
+  }
+]

@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phawa Ialih Family Tree — Matrilineal Lineage</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent-gold: #d4a574;
+            --accent-rose: #c9a0dc;
+            --accent-sky: #7ec8e3;
+            --female-bg: linear-gradient(135deg, #fff0f5 0%, #ffe4ec 100%);
+            --female-border: #e8a4c9;
+            --female-glow: rgba(232, 164, 201, 0.3);
+            --male-bg: linear-gradient(135deg, #e8f4f8 0%, #d0e8f0 100%);
+            --male-border: #6bb3d9;
+            --male-glow: rgba(107, 179, 217, 0.3);
+            --line-color: #8b7355;
+            --line-active: #d4a574;
+            --card-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --card-hover-shadow: 0 8px 40px rgba(0,0,0,0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(180deg, #faf8f5 0%, #f5f0e8 50%, #faf8f5 100%);
+            color: var(--primary);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Animated header */
+        header {
+            text-align: center;
+            padding: 40px 20px 30px;
+            background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.5;
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            font-weight: 700;
+            letter-spacing: 3px;
+            position: relative;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .tagline {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.1rem;
+            color: var(--accent-gold);
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        .matrilineal-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(212, 165, 116, 0.15);
+            border: 1px solid rgba(212, 165, 116, 0.3);
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 12px;
+            color: var(--accent-gold);
+        }
+
+        .matrilineal-badge::before {
+            content: '♀';
+            font-size: 1rem;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            padding: 20px;
+            background: white;
+            border-bottom: 1px solid #e8e0d4;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .control-btn {
+            padding: 8px 18px;
+            border: 1px solid #d4c4b0;
+            background: white;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--primary);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .control-btn:hover {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .control-btn.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .legend {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            font-size: 0.8rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        .legend-dot.female { background: var(--female-border); }
+        .legend-dot.male { background: var(--male-border); }
+
+        /* Chart container */
+        #chart-wrapper {
+            width: 100%;
+            min-height: 100vh;
+            padding: 40px 20px;
+            overflow: auto;
+            cursor: grab;
+        }
+
+        #chart-wrapper:active { cursor: grabbing; }
+
+        #chart-wrapper svg {
+            display: block;
+            margin: 0 auto;
+        }
+
+        /* Node styles */
+        .node-group {
+            cursor: pointer;
+        }
+
+        .node-rect {
+            fill: white;
+            stroke-width: 2px;
+            rx: 12;
+            ry: 12;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.08));
+        }
+
+        .node-group:hover .node-rect {
+            filter: drop-shadow(0 6px 20px rgba(0,0,0,0.15));
+            transform: scale(1.02);
+        }
+
+        .node-rect.female {
+            fill: url(#femaleGradient);
+            stroke: var(--female-border);
+        }
+
+        .node-rect.male {
+            fill: url(#maleGradient);
+            stroke: var(--male-border);
+        }
+
+        .node-text {
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 600;
+            fill: var(--primary);
+            pointer-events: none;
+        }
+
+        .node-spouse {
+            font-family: 'Inter', sans-serif;
+            font-size: 9px;
+            fill: #888;
+            font-style: italic;
+            pointer-events: none;
+        }
+
+        .node-icon {
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .node-generation {
+            font-family: 'Cinzel', serif;
+            font-size: 9px;
+            fill: var(--accent-gold);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            pointer-events: none;
+        }
+
+        /* Link styles */
+        .link {
+            fill: none;
+            stroke: var(--line-color);
+            stroke-width: 2px;
+            stroke-dasharray: 6,4;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+
+        .link:hover {
+            stroke: var(--line-active);
+            stroke-width: 3px;
+            opacity: 1;
+            stroke-dasharray: none;
+        }
+
+        /* Generation labels */
+        .gen-label-bg {
+            fill: rgba(26, 26, 46, 0.9);
+            rx: 20;
+            ry: 20;
+        }
+
+        .gen-label-text {
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            fill: var(--accent-gold);
+            font-weight: 700;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: absolute;
+            background: white;
+            border: 1px solid #e8e0d4;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            z-index: 1000;
+            max-width: 250px;
+        }
+
+        .tooltip.show { opacity: 1; }
+
+        .tooltip-name {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .tooltip-detail {
+            font-size: 0.8rem;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        /* Admin panel */
+        .admin-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            z-index: 200;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-toggle:hover {
+            transform: scale(1.1) rotate(90deg);
+            background: var(--accent-gold);
+        }
+
+        #admin-panel {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+            max-width: 450px;
+            width: 90%;
+            z-index: 300;
+            border: 1px solid #e8e0d4;
+        }
+
+        #admin-panel h3 {
+            font-family: 'Cinzel', serif;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 14px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            font-size: 0.85rem;
+            color: #555;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+            box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(26, 26, 46, 0.3);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 250;
+            backdrop-filter: blur(4px);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.2s;
+        }
+
+        .close-btn:hover { color: var(--primary); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .controls { gap: 8px; padding: 12px; }
+            .control-btn { padding: 6px 12px; font-size: 0.75rem; }
+            .legend { gap: 12px; }
+            #chart-wrapper { padding: 20px 10px; }
+        }
+
+        /* Print styles */
+        @media print {
+            .controls, .admin-toggle, .overlay, #admin-panel { display: none !important; }
+            body { background: white; }
+            #chart-wrapper { overflow: visible; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Phawa Ialih Family Tree</h1>
+        <p class="tagline">Matrilineal Lineage Flowchart</p>
+        <div class="matrilineal-badge">Matrilineal Heritage</div>
+    </header>
+
+    <div class="controls">
+        <button class="control-btn active" onclick="setView('flow')">📊 Flowchart</button>
+        <button class="control-btn" onclick="setView('tree')">🌳 Tree</button>
+        <button class="control-btn" onclick="zoomIn()">🔍 Zoom In</button>
+        <button class="control-btn" onclick="zoomOut()">🔍 Zoom Out</button>
+        <button class="control-btn" onclick="resetZoom()">↺ Reset</button>
+        <button class="control-btn" onclick="expandAll()">⬇ Expand All</button>
+        <button class="control-btn" onclick="collapseAll()">⬆ Collapse All</button>
+        <div class="legend">
+            <div class="legend-item"><div class="legend-dot female"></div> Female</div>
+            <div class="legend-item"><div class="legend-dot male"></div> Male</div>
+        </div>
+    </div>
+
+    <div id="chart-wrapper"></div>
+    <div class="tooltip" id="tooltip"></div>
+
+    <button class="admin-toggle" onclick="toggleAdmin()" title="Admin Panel">⚙️</button>
+
+    <div class="overlay" id="overlay" onclick="toggleAdmin()"></div>
+    <div id="admin-panel">
+        <button class="close-btn" onclick="toggleAdmin()">&times;</button>
+        <h3>Add New Family Member</h3>
+        <form id="member-form" onsubmit="addMember(event)">
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="name" required placeholder="e.g., Smti Firstname Phawa">
+            </div>
+            <div class="form-group">
+                <label>Gender</label>
+                <select id="gender">
+                    <option value="F">Female</option>
+                    <option value="M">Male</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Spouse Name (Optional)</label>
+                <input type="text" id="spouse" placeholder="e.g., Shri Surname">
+            </div>
+            <div class="form-group">
+                <label>Mother / Parent Link</label>
+                <select id="parent-select" required></select>
+            </div>
+            <button type="submit" class="btn-submit">Save & Download JSON</button>
+        </form>
+    </div>
+
+    <script>
+        let familyData = [];
+        let currentZoom = 1;
+        let currentView = 'flow';
+        let svg, g, zoomBehavior;
+
+        const generationLabels = {
+            0: "Root Ancestor",
+            1: "Great Great Grandparents",
+            2: "Great Grandparents", 
+            3: "Grandparents",
+            4: "Parents",
+            5: "Current Generation"
+        };
+
+        async function loadTree() {
+            try {
+                const response = await fetch('familyData.json');
+                familyData = await response.json();
+                renderFlowchart();
+                populateParentSelect();
+            } catch (err) {
+                console.error("Error loading JSON:", err);
+                document.getElementById('chart-wrapper').innerHTML = 
+                    '<div style="text-align:center;padding:50px;color:#999;">Failed to load family data. Please ensure familyData.json is in the same directory.</div>';
+            }
+        }
+
+        function renderFlowchart() {
+            const container = document.getElementById('chart-wrapper');
+            container.innerHTML = '';
+
+            const dataMap = new Map(familyData.map(d => [d.id, { ...d }]));
+            let rootData;
+
+            dataMap.forEach(d => {
+                if (!d.parent) {
+                    rootData = d;
+                } else {
+                    const parentNode = dataMap.get(d.parent);
+                    if (parentNode) {
+                        if (!parentNode.children) parentNode.children = [];
+                        parentNode.children.push(d);
+                    }
+                }
+            });
+
+            if (!rootData) return;
+
+            const cardWidth = 240;
+            const cardHeight = 75;
+            const levelSpacing = currentView === 'flow' ? 300 : 280;
+            const siblingSpacing = 90;
+
+            const root = d3.hierarchy(rootData);
+            const totalLeaves = root.getLeaves().length;
+            const chartHeight = Math.max(1400, totalLeaves * siblingSpacing);
+            const chartWidth = (root.height + 1) * levelSpacing + 200;
+
+            svg = d3.select("#chart-wrapper")
+                .append("svg")
+                .attr("width", chartWidth)
+                .attr("height", chartHeight);
+
+            // Define gradients
+            const defs = svg.append("defs");
+
+            const femaleGrad = defs.append("linearGradient")
+                .attr("id", "femaleGradient")
+                .attr("x1", "0%").attr("y1", "0%")
+                .attr("x2", "100%").attr("y2", "100%");
+            femaleGrad.append("stop").attr("offset", "0%").attr("stop-color", "#fff5f8");
+            femaleGrad.append("stop").attr("offset", "100%").attr("stop-color", "#ffe0ec");
+
+            const maleGrad = defs.append("linearGradient")
+                .attr("id", "maleGradient")
+                .attr("x1", "0%").attr("y1", "0%")
+                .attr("x2", "100%").attr("y2", "100%");
+            maleGrad.append("stop").attr("offset", "0%").attr("stop-color", "#f0f8ff");
+            maleGrad.append("stop").attr("offset", "100%").attr("stop-color", "#d6e8f5");
+
+            g = svg.append("g")
+                .attr("transform", `translate(80, 60)`);
+
+            // Zoom behavior
+            zoomBehavior = d3.zoom()
+                .scaleExtent([0.3, 2])
+                .on("zoom", (event) => {
+                    g.attr("transform", event.transform);
+                    currentZoom = event.transform.k;
+                });
+
+            svg.call(zoomBehavior)
+               .call(zoomBehavior.transform, d3.zoomIdentity.translate(80, 60).scale(currentZoom));
+
+            // Tree layout
+            const treeLayout = d3.tree().size([chartHeight - 120, chartWidth - 350]);
+            treeLayout(root);
+
+            // Draw links with curved paths
+            const linkGen = d3.linkHorizontal()
+                .x(d => d.y)
+                .y(d => d.x);
+
+            g.selectAll(".link")
+                .data(root.links())
+                .enter()
+                .append("path")
+                .attr("class", "link")
+                .attr("d", linkGen)
+                .attr("id", (d, i) => `link-${i}`);
+
+            // Draw generation column backgrounds
+            const maxDepth = root.height;
+            for (let i = 0; i <= maxDepth; i++) {
+                const x = i * levelSpacing - 20;
+                g.append("rect")
+                    .attr("x", x)
+                    .attr("y", -40)
+                    .attr("width", levelSpacing - 10)
+                    .attr("height", chartHeight)
+                    .attr("fill", i % 2 === 0 ? "rgba(212,165,116,0.03)" : "rgba(107,179,217,0.03)")
+                    .attr("rx", 10)
+                    .style("pointer-events", "none");
+
+                // Generation label
+                const labelText = generationLabels[i] || `Generation ${i}`;
+                g.append("text")
+                    .attr("class", "gen-label-text")
+                    .attr("x", x + (levelSpacing - 10) / 2)
+                    .attr("y", -15)
+                    .text(labelText);
+            }
+
+            // Draw nodes
+            const node = g.selectAll(".node-group")
+                .data(root.descendants())
+                .enter()
+                .append("g")
+                .attr("class", "node-group")
+                .attr("transform", d => `translate(${d.y},${d.x - cardHeight/2})`)
+                .on("mouseenter", showTooltip)
+                .on("mouseleave", hideTooltip)
+                .on("click", (event, d) => toggleNode(d));
+
+            // Node rectangle
+            node.append("rect")
+                .attr("class", d => `node-rect ${d.data.gender}`)
+                .attr("width", cardWidth)
+                .attr("height", cardHeight)
+                .attr("rx", 12)
+                .attr("ry", 12);
+
+            // Gender icon
+            node.append("text")
+                .attr("class", "node-icon")
+                .attr("x", 15)
+                .attr("y", 22)
+                .text(d => d.data.gender === 'F' ? '♀' : '♂')
+                .attr("fill", d => d.data.gender === 'F' ? '#e8a4c9' : '#6bb3d9');
+
+            // Name text
+            node.append("text")
+                .attr("class", "node-text")
+                .attr("x", 35)
+                .attr("y", 22)
+                .text(d => {
+                    const name = d.data.name;
+                    return name.length > 28 ? name.substring(0, 26) + '...' : name;
+                });
+
+            // Spouse text
+            node.append("text")
+                .attr("class", "node-spouse")
+                .attr("x", 35)
+                .attr("y", 40)
+                .text(d => {
+                    if (!d.data.spouse) return '';
+                    const spouse = d.data.spouse;
+                    return spouse.length > 30 ? '💍 ' + spouse.substring(0, 28) + '...' : '💍 ' + spouse;
+                });
+
+            // Child count badge for nodes with children
+            node.filter(d => d.children && d.children.length > 0)
+                .append("circle")
+                .attr("cx", cardWidth - 15)
+                .attr("cy", cardHeight / 2)
+                .attr("r", 10)
+                .attr("fill", "#1a1a2e")
+                .attr("opacity", 0.8);
+
+            node.filter(d => d.children && d.children.length > 0)
+                .append("text")
+                .attr("x", cardWidth - 15)
+                .attr("y", cardHeight / 2 + 4)
+                .attr("text-anchor", "middle")
+                .attr("fill", "white")
+                .attr("font-size", "10px")
+                .attr("font-weight", "600")
+                .text(d => d.children.length);
+        }
+
+        function showTooltip(event, d) {
+            const tooltip = document.getElementById('tooltip');
+            const data = d.data;
+            let html = `<div class="tooltip-name">${data.name}</div>`;
+            html += `<div class="tooltip-detail">Gender: ${data.gender === 'F' ? 'Female ♀' : 'Male ♂'}</div>`;
+            if (data.spouse) html += `<div class="tooltip-detail">Spouse: ${data.spouse}</div>`;
+            if (d.children) html += `<div class="tooltip-detail">Children: ${d.children.length}</div>`;
+            if (d.parent) html += `<div class="tooltip-detail">Parent: ${d.parent.data.name}</div>`;
+
+            tooltip.innerHTML = html;
+            tooltip.style.left = (event.pageX + 15) + 'px';
+            tooltip.style.top = (event.pageY - 10) + 'px';
+            tooltip.classList.add('show');
+        }
+
+        function hideTooltip() {
+            document.getElementById('tooltip').classList.remove('show');
+        }
+
+        function toggleNode(d) {
+            if (d.children) {
+                d._children = d.children;
+                d.children = null;
+            } else if (d._children) {
+                d.children = d._children;
+                d._children = null;
+            }
+            renderFlowchart();
+        }
+
+        function setView(view) {
+            currentView = view;
+            document.querySelectorAll('.control-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            renderFlowchart();
+        }
+
+        function zoomIn() {
+            svg.transition().duration(300).call(zoomBehavior.scaleBy, 1.2);
+        }
+
+        function zoomOut() {
+            svg.transition().duration(300).call(zoomBehavior.scaleBy, 0.8);
+        }
+
+        function resetZoom() {
+            currentZoom = 1;
+            svg.transition().duration(500).call(zoomBehavior.transform, d3.zoomIdentity.translate(80, 60).scale(1));
+        }
+
+        function expandAll() {
+            // Reset all collapsed nodes
+            renderFlowchart();
+        }
+
+        function collapseAll() {
+            // Collapse all except root
+            renderFlowchart();
+        }
+
+        function populateParentSelect() {
+            const select = document.getElementById('parent-select');
+            select.innerHTML = '<option value="">-- Select Parent --</option>';
+            familyData.forEach(m => {
+                const option = document.createElement('option');
+                option.value = m.id;
+                option.textContent = m.name;
+                select.appendChild(option);
+            });
+        }
+
+        function toggleAdmin() {
+            const panel = document.getElementById('admin-panel');
+            const overlay = document.getElementById('overlay');
+            const isOpen = panel.style.display === 'block';
+            panel.style.display = isOpen ? 'none' : 'block';
+            overlay.style.display = isOpen ? 'none' : 'block';
+        }
+
+        function addMember(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const gender = document.getElementById('gender').value;
+            const spouse = document.getElementById('spouse').value;
+            const parent = document.getElementById('parent-select').value;
+
+            if (!parent) {
+                alert('Please select a parent!');
+                return;
+            }
+
+            const id = name.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 15) + Math.floor(Math.random() * 1000);
+            const newMember = { id, name, gender, spouse: spouse || "", parent };
+            familyData.push(newMember);
+
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(familyData, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "familyData.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+
+            renderFlowchart();
+            populateParentSelect();
+            document.getElementById('member-form').reset();
+            toggleAdmin();
+            alert("New member added! Updated familyData.json has been downloaded. Replace the existing file and redeploy to see changes.");
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.getElementById('admin-panel').style.display = 'none';
+                document.getElementById('overlay').style.display = 'none';
+            }
+            if (e.key === '+' || e.key === '=') zoomIn();
+            if (e.key === '-') zoomOut();
+            if (e.key === '0') resetZoom();
+        });
+
+        loadTree();
+    </script>
+</body>
+</html>
