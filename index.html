@@ -13,115 +13,122 @@
             --accent-gold: #d4a574;
             --female-border: #e8a4c9;
             --male-border: #6bb3d9;
-            --line-color: #8b7355;
-            --line-active: #d4a574;
+            --line-color: #a08060;
             --bg-cream: #faf8f5;
             --bg-warm: #f5f0e8;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(180deg, var(--bg-cream) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
+            background: var(--bg-cream);
             color: var(--primary);
-            overflow-x: hidden;
-            min-height: 100vh;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
         }
         header {
             text-align: center;
-            padding: 40px 20px 30px;
+            padding: 15px 20px;
             background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
             position: relative;
+            z-index: 10;
+            flex-shrink: 0;
         }
         h1 {
             font-family: 'Cinzel', serif;
-            font-size: clamp(1.8rem, 4vw, 3rem);
+            font-size: clamp(1.4rem, 3vw, 2.2rem);
             font-weight: 700;
-            letter-spacing: 3px;
+            letter-spacing: 2px;
             text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
         .tagline {
             font-family: 'Playfair Display', serif;
             font-style: italic;
-            font-size: 1.1rem;
+            font-size: 0.95rem;
             color: var(--accent-gold);
-            margin-top: 8px;
+            margin-top: 4px;
         }
         .matrilineal-badge {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             background: rgba(212, 165, 116, 0.15);
             border: 1px solid rgba(212, 165, 116, 0.3);
-            padding: 6px 16px;
+            padding: 4px 12px;
             border-radius: 20px;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-top: 12px;
+            letter-spacing: 1px;
+            margin-top: 8px;
             color: var(--accent-gold);
         }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
         .controls {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            padding: 20px;
+            gap: 10px;
+            padding: 10px 20px;
             background: white;
             border-bottom: 1px solid #e8e0d4;
             flex-wrap: wrap;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            z-index: 10;
+            flex-shrink: 0;
         }
         .control-btn {
-            padding: 8px 18px;
+            padding: 6px 14px;
             border: 1px solid #d4c4b0;
             background: white;
-            border-radius: 25px;
+            border-radius: 20px;
             cursor: pointer;
             font-family: 'Inter', sans-serif;
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             font-weight: 500;
             color: var(--primary);
             transition: all 0.3s ease;
         }
-        .control-btn:hover, .control-btn.active {
+        .control-btn:hover {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
         }
         .legend {
             display: flex;
-            gap: 20px;
+            gap: 15px;
             align-items: center;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
         }
-        .legend-dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; margin-right: 5px; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 3px; display: inline-block; margin-right: 4px; }
         .legend-dot.female { background: var(--female-border); }
         .legend-dot.male { background: var(--male-border); }
+
         #chart-wrapper {
-            width: 100%;
-            min-height: 100vh;
-            padding: 40px 20px;
+            flex: 1;
             overflow: auto;
-            display: flex;
-            justify-content: center;
+            background: linear-gradient(180deg, var(--bg-cream) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
+            position: relative;
         }
-        #chart-wrapper svg { display: block; }
+        #chart-wrapper svg { display: block; margin: 0 auto; }
 
         .node-group { cursor: pointer; }
         .node-rect {
             fill: white;
             stroke-width: 2.5px;
-            rx: 14;
-            ry: 14;
-            filter: drop-shadow(0 3px 12px rgba(0,0,0,0.1));
+            rx: 16;
+            ry: 16;
+            filter: drop-shadow(0 4px 15px rgba(0,0,0,0.12));
             transition: all 0.3s ease;
         }
         .node-group:hover .node-rect {
-            filter: drop-shadow(0 6px 24px rgba(0,0,0,0.18));
-            stroke-width: 3px;
+            filter: drop-shadow(0 8px 30px rgba(0,0,0,0.2));
+            stroke-width: 3.5px;
         }
         .node-rect.female {
             fill: url(#femaleGradient);
@@ -133,21 +140,21 @@
         }
         .node-text {
             font-family: 'Inter', sans-serif;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
             fill: var(--primary);
             pointer-events: none;
         }
         .node-spouse {
             font-family: 'Inter', sans-serif;
-            font-size: 10px;
-            fill: #777;
+            font-size: 11px;
+            fill: #666;
             font-style: italic;
             pointer-events: none;
         }
         .node-badge {
             font-family: 'Inter', sans-serif;
-            font-size: 9px;
+            font-size: 10px;
             font-weight: 700;
             fill: white;
             pointer-events: none;
@@ -156,23 +163,31 @@
             fill: none;
             stroke: var(--line-color);
             stroke-width: 2.5px;
-            opacity: 0.7;
+            opacity: 0.6;
         }
-        .gen-label-bg {
-            fill: rgba(26, 26, 46, 0.85);
-            rx: 16;
-            ry: 16;
+        .gen-band {
+            fill: rgba(212, 165, 116, 0.03);
+            stroke: none;
+        }
+        .gen-band-alt {
+            fill: rgba(107, 179, 217, 0.03);
+            stroke: none;
+        }
+        .gen-label-pill {
+            fill: rgba(26, 26, 46, 0.9);
+            rx: 20;
+            ry: 20;
         }
         .gen-label-text {
             font-family: 'Cinzel', serif;
-            font-size: 11px;
+            font-size: 12px;
             fill: var(--accent-gold);
             font-weight: 700;
             text-anchor: middle;
             dominant-baseline: middle;
         }
         .tooltip {
-            position: absolute;
+            position: fixed;
             background: white;
             border: 1px solid #e8e0d4;
             border-radius: 12px;
@@ -182,39 +197,39 @@
             opacity: 0;
             transition: opacity 0.2s ease;
             z-index: 1000;
-            max-width: 250px;
+            max-width: 280px;
         }
         .tooltip.show { opacity: 1; }
         .tooltip-name {
             font-family: 'Playfair Display', serif;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 1.1rem;
             color: var(--primary);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
         }
         .tooltip-detail {
-            font-size: 0.8rem;
-            color: #666;
-            line-height: 1.5;
+            font-size: 0.85rem;
+            color: #555;
+            line-height: 1.6;
         }
         .admin-toggle {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 56px;
-            height: 56px;
+            bottom: 25px;
+            right: 25px;
+            width: 50px;
+            height: 50px;
             border-radius: 50%;
             background: var(--primary);
             color: white;
             border: none;
             cursor: pointer;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             z-index: 200;
             transition: all 0.3s ease;
         }
         .admin-toggle:hover {
-            transform: scale(1.1) rotate(90deg);
+            transform: scale(1.1);
             background: var(--accent-gold);
         }
         #admin-panel {
@@ -270,31 +285,48 @@
             cursor: pointer;
             color: #999;
         }
+        .scroll-hint {
+            position: fixed;
+            bottom: 85px;
+            right: 25px;
+            background: rgba(26, 26, 46, 0.8);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            z-index: 100;
+            animation: fadeOut 4s forwards;
+            animation-delay: 3s;
+        }
+        @keyframes fadeOut {
+            to { opacity: 0; visibility: hidden; }
+        }
     </style>
 <base target="_blank">
 </head>
 <body>
-    <header>
-        <h1>Phawa Ialih Family Tree</h1>
-        <p class="tagline">Matrilineal Lineage Flowchart</p>
-        <div class="matrilineal-badge">♀ Matrilineal Heritage</div>
-    </header>
+    <div class="main-container">
+        <header>
+            <h1>Phawa Ialih Family Tree</h1>
+            <p class="tagline">Matrilineal Lineage Flowchart</p>
+            <div class="matrilineal-badge">♀ Matrilineal Heritage</div>
+        </header>
 
-    <div class="controls">
-        <button class="control-btn active" onclick="resetZoom()">↺ Center View</button>
-        <button class="control-btn" onclick="zoomIn()">🔍 Zoom In</button>
-        <button class="control-btn" onclick="zoomOut()">🔍 Zoom Out</button>
-        <div class="legend">
-            <span><span class="legend-dot female"></span>Female</span>
-            <span><span class="legend-dot male"></span>Male</span>
+        <div class="controls">
+            <button class="control-btn" onclick="fitToScreen()">🖥️ Fit to Screen</button>
+            <button class="control-btn" onclick="zoomIn()">🔍 Zoom In</button>
+            <button class="control-btn" onclick="zoomOut()">🔍 Zoom Out</button>
+            <button class="control-btn" onclick="resetView()">↺ Reset View</button>
+            <div class="legend">
+                <span><span class="legend-dot female"></span>Female</span>
+                <span><span class="legend-dot male"></span>Male</span>
+            </div>
         </div>
+
+        <div id="chart-wrapper"></div>
     </div>
 
-    <div id="chart-wrapper">
-        <div style="text-align:center;padding:50px;color:#999;">
-            <h3>Loading family data...</h3>
-        </div>
-    </div>
+    <div class="scroll-hint">🖱️ Scroll to explore · Drag to pan</div>
     <div class="tooltip" id="tooltip"></div>
 
     <button class="admin-toggle" onclick="toggleAdmin()">⚙️</button>
@@ -335,8 +367,8 @@
         }
 
         let familyData = [];
-        let currentZoom = 1;
         let svg, g, zoomBehavior;
+        let chartWidth, chartHeight;
 
         const generationLabels = {
             0: "👑 Root Ancestor",
@@ -385,17 +417,14 @@
 
             if (!rootData) return;
 
-            const cardWidth = 260;
-            const cardHeight = 80;
-            const levelSpacing = 140;  // vertical space between generations
-            const siblingSpacing = 320; // horizontal space between siblings
+            // BIGGER cards for readability
+            const cardWidth = 280;
+            const cardHeight = 90;
+            const levelSpacing = 160;   // vertical gap between generations
+            const siblingSpacing = 340; // horizontal gap between siblings
 
             const root = d3.hierarchy(rootData);
-
-            // Calculate tree dimensions
-            const treeLayout = d3.tree()
-                .nodeSize([siblingSpacing, levelSpacing]);
-
+            const treeLayout = d3.tree().nodeSize([siblingSpacing, levelSpacing]);
             treeLayout(root);
 
             // Calculate bounds
@@ -407,11 +436,15 @@
                 if (d.y > maxY) maxY = d.y;
             });
 
-            const padding = 100;
-            const chartWidth = (maxX - minX) + cardWidth + padding * 2;
-            const chartHeight = (maxY - minY) + cardHeight + padding * 2 + 80;
-            const offsetX = padding - minX + cardWidth / 2;
-            const offsetY = padding + 60;
+            const marginX = 120;
+            const marginY = 80;
+            const genLabelWidth = 200;
+
+            chartWidth = (maxX - minX) + cardWidth + marginX * 2 + genLabelWidth;
+            chartHeight = (maxY - minY) + cardHeight + marginY * 2;
+
+            const offsetX = marginX + genLabelWidth - minX + cardWidth / 2;
+            const offsetY = marginY - minY + cardHeight / 2;
 
             svg = d3.select("#chart-wrapper")
                 .append("svg")
@@ -424,55 +457,61 @@
                 .attr("id", "femaleGradient")
                 .attr("x1", "0%").attr("y1", "0%")
                 .attr("x2", "100%").attr("y2", "100%");
-            femaleGrad.append("stop").attr("offset", "0%").attr("stop-color", "#fff5f8");
-            femaleGrad.append("stop").attr("offset", "100%").attr("stop-color", "#ffe0ec");
+            femaleGrad.append("stop").attr("offset", "0%").attr("stop-color", "#fff8fb");
+            femaleGrad.append("stop").attr("offset", "100%").attr("stop-color", "#ffe8f0");
 
             const maleGrad = defs.append("linearGradient")
                 .attr("id", "maleGradient")
                 .attr("x1", "0%").attr("y1", "0%")
                 .attr("x2", "100%").attr("y2", "100%");
-            maleGrad.append("stop").attr("offset", "0%").attr("stop-color", "#f0f8ff");
-            maleGrad.append("stop").attr("offset", "100%").attr("stop-color", "#d6e8f5");
+            maleGrad.append("stop").attr("offset", "0%").attr("stop-color", "#f5fbff");
+            maleGrad.append("stop").attr("offset", "100%").attr("stop-color", "#e0f0f8");
 
             g = svg.append("g");
 
+            // Zoom + pan
             zoomBehavior = d3.zoom()
-                .scaleExtent([0.2, 2])
+                .scaleExtent([0.15, 3])
                 .on("zoom", (event) => {
                     g.attr("transform", event.transform);
                 });
 
             svg.call(zoomBehavior);
 
-            // Generation band backgrounds
+            // Generation bands (horizontal rows)
             const maxDepth = root.height;
             for (let i = 0; i <= maxDepth; i++) {
                 const y = offsetY + i * levelSpacing - levelSpacing / 2;
+                const bandClass = i % 2 === 0 ? "gen-band" : "gen-band-alt";
+
                 g.append("rect")
-                    .attr("x", -padding)
+                    .attr("class", bandClass)
+                    .attr("x", -marginX)
                     .attr("y", y)
                     .attr("width", chartWidth)
                     .attr("height", levelSpacing)
-                    .attr("fill", i % 2 === 0 ? "rgba(212,165,116,0.04)" : "rgba(107,179,217,0.04)")
                     .style("pointer-events", "none");
 
-                // Generation label on the left
+                // Generation label pill
                 const labelText = generationLabels[i] || `Generation ${i}`;
+                const pillWidth = 190;
+                const pillHeight = 32;
+
                 g.append("rect")
-                    .attr("class", "gen-label-bg")
-                    .attr("x", 10)
-                    .attr("y", y + levelSpacing / 2 - 14)
-                    .attr("width", 180)
-                    .attr("height", 28);
+                    .attr("class", "gen-label-pill")
+                    .attr("x", 20)
+                    .attr("y", y + levelSpacing / 2 - pillHeight / 2)
+                    .attr("width", pillWidth)
+                    .attr("height", pillHeight);
 
                 g.append("text")
                     .attr("class", "gen-label-text")
-                    .attr("x", 100)
+                    .attr("x", 20 + pillWidth / 2)
                     .attr("y", y + levelSpacing / 2 + 1)
                     .text(labelText);
             }
 
-            // Draw links (vertical tree style)
+            // Draw links
             const linkGen = d3.linkVertical()
                 .x(d => d.x + offsetX)
                 .y(d => d.y + offsetY);
@@ -494,73 +533,97 @@
                 .on("mouseenter", showTooltip)
                 .on("mouseleave", hideTooltip);
 
-            // Card background
+            // Card
             node.append("rect")
                 .attr("class", d => `node-rect ${d.data.gender}`)
                 .attr("width", cardWidth)
                 .attr("height", cardHeight)
-                .attr("rx", 14)
-                .attr("ry", 14);
+                .attr("rx", 16)
+                .attr("ry", 16);
 
             // Gender icon
             node.append("text")
                 .attr("x", 18)
-                .attr("y", 24)
+                .attr("y", 28)
                 .text(d => d.data.gender === 'F' ? '♀' : '♂')
                 .attr("fill", d => d.data.gender === 'F' ? '#e8a4c9' : '#6bb3d9')
-                .attr("font-size", "16px")
+                .attr("font-size", "18px")
                 .attr("font-weight", "bold")
                 .style("pointer-events", "none");
 
             // Name
             node.append("text")
                 .attr("class", "node-text")
-                .attr("x", 40)
-                .attr("y", 24)
+                .attr("x", 42)
+                .attr("y", 28)
                 .text(d => {
                     const name = d.data.name;
-                    return name.length > 30 ? name.substring(0, 28) + '...' : name;
+                    return name.length > 32 ? name.substring(0, 30) + '...' : name;
                 });
 
             // Spouse
             node.append("text")
                 .attr("class", "node-spouse")
-                .attr("x", 40)
-                .attr("y", 44)
+                .attr("x", 42)
+                .attr("y", 50)
                 .text(d => {
                     if (!d.data.spouse) return '';
                     const spouse = d.data.spouse;
-                    return spouse.length > 32 ? '💍 ' + spouse.substring(0, 30) + '...' : '💍 ' + spouse;
+                    return spouse.length > 34 ? '💍 ' + spouse.substring(0, 32) + '...' : '💍 ' + spouse;
                 });
 
-            // Child count badge
+            // Child count
             node.filter(d => d.children && d.children.length > 0)
                 .append("circle")
-                .attr("cx", cardWidth - 18)
-                .attr("cy", cardHeight - 18)
-                .attr("r", 11)
+                .attr("cx", cardWidth - 20)
+                .attr("cy", cardHeight - 20)
+                .attr("r", 12)
                 .attr("fill", "#1a1a2e")
                 .attr("opacity", 0.85);
 
             node.filter(d => d.children && d.children.length > 0)
                 .append("text")
                 .attr("class", "node-badge")
-                .attr("x", cardWidth - 18)
-                .attr("y", cardHeight - 14)
+                .attr("x", cardWidth - 20)
+                .attr("y", cardHeight - 16)
                 .attr("text-anchor", "middle")
                 .text(d => d.children.length);
 
-            // Initial zoom to fit
-            const initialScale = Math.min(
-                (window.innerWidth - 40) / chartWidth,
-                (window.innerHeight - 200) / chartHeight,
-                1
-            );
-            const initialX = (window.innerWidth - chartWidth * initialScale) / 2;
-            const initialY = 20;
+            // AUTO ZOOM: Start zoomed in enough to read, centered on root
+            fitToScreen();
+        }
 
-            svg.call(zoomBehavior.transform, 
-                d3.zoomIdentity.translate(initialX, initialY).scale(initialScale));
+        function fitToScreen() {
+            if (!svg) return;
+            const wrapper = document.getElementById('chart-wrapper');
+            const wrapperW = wrapper.clientWidth;
+            const wrapperH = wrapper.clientHeight;
+
+            const scale = Math.min(
+                (wrapperW - 60) / chartWidth,
+                (wrapperH - 60) / chartHeight,
+                0.85  // cap at 85% so it's not too zoomed out
+            );
+
+            const tx = (wrapperW - chartWidth * scale) / 2;
+            const ty = 30;
+
+            svg.transition().duration(600).call(
+                zoomBehavior.transform,
+                d3.zoomIdentity.translate(tx, ty).scale(scale)
+            );
+        }
+
+        function zoomIn() {
+            svg.transition().duration(300).call(zoomBehavior.scaleBy, 1.4);
+        }
+
+        function zoomOut() {
+            svg.transition().duration(300).call(zoomBehavior.scaleBy, 0.7);
+        }
+
+        function resetView() {
+            fitToScreen();
         }
 
         function showTooltip(event, d) {
@@ -573,25 +636,13 @@
             if (d.parent && d.parent.data) html += `<div class="tooltip-detail">Parent: ${d.parent.data.name}</div>`;
 
             tooltip.innerHTML = html;
-            tooltip.style.left = (event.pageX + 15) + 'px';
-            tooltip.style.top = (event.pageY - 10) + 'px';
+            tooltip.style.left = (event.clientX + 15) + 'px';
+            tooltip.style.top = (event.clientY - 10) + 'px';
             tooltip.classList.add('show');
         }
 
         function hideTooltip() {
             document.getElementById('tooltip').classList.remove('show');
-        }
-
-        function zoomIn() {
-            svg.transition().duration(300).call(zoomBehavior.scaleBy, 1.3);
-        }
-
-        function zoomOut() {
-            svg.transition().duration(300).call(zoomBehavior.scaleBy, 0.7);
-        }
-
-        function resetZoom() {
-            svg.transition().duration(500).call(zoomBehavior.transform, d3.zoomIdentity);
         }
 
         function populateParentSelect() {
@@ -643,6 +694,11 @@
             toggleAdmin();
             alert("New member added! Updated familyData.json downloaded.");
         }
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            setTimeout(fitToScreen, 100);
+        });
 
         loadTree();
     </script>
