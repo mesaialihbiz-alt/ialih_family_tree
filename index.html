@@ -15,11 +15,13 @@
             --male-border: #6bb3d9;
             --line-color: #8b7355;
             --line-active: #d4a574;
+            --bg-cream: #faf8f5;
+            --bg-warm: #f5f0e8;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Inter', sans-serif;
-            background: linear-gradient(180deg, #faf8f5 0%, #f5f0e8 50%, #faf8f5 100%);
+            background: linear-gradient(180deg, var(--bg-cream) 0%, var(--bg-warm) 50%, var(--bg-cream) 100%);
             color: var(--primary);
             overflow-x: hidden;
             min-height: 100vh;
@@ -103,15 +105,23 @@
             min-height: 100vh;
             padding: 40px 20px;
             overflow: auto;
+            display: flex;
+            justify-content: center;
         }
-        #chart-wrapper svg { display: block; margin: 0 auto; }
+        #chart-wrapper svg { display: block; }
+
         .node-group { cursor: pointer; }
         .node-rect {
             fill: white;
-            stroke-width: 2px;
-            rx: 12;
-            ry: 12;
-            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.08));
+            stroke-width: 2.5px;
+            rx: 14;
+            ry: 14;
+            filter: drop-shadow(0 3px 12px rgba(0,0,0,0.1));
+            transition: all 0.3s ease;
+        }
+        .node-group:hover .node-rect {
+            filter: drop-shadow(0 6px 24px rgba(0,0,0,0.18));
+            stroke-width: 3px;
         }
         .node-rect.female {
             fill: url(#femaleGradient);
@@ -123,24 +133,35 @@
         }
         .node-text {
             font-family: 'Inter', sans-serif;
-            font-size: 11px;
+            font-size: 12px;
             font-weight: 600;
             fill: var(--primary);
             pointer-events: none;
         }
         .node-spouse {
             font-family: 'Inter', sans-serif;
-            font-size: 9px;
-            fill: #888;
+            font-size: 10px;
+            fill: #777;
             font-style: italic;
+            pointer-events: none;
+        }
+        .node-badge {
+            font-family: 'Inter', sans-serif;
+            font-size: 9px;
+            font-weight: 700;
+            fill: white;
             pointer-events: none;
         }
         .link {
             fill: none;
             stroke: var(--line-color);
-            stroke-width: 2px;
-            stroke-dasharray: 6,4;
-            opacity: 0.6;
+            stroke-width: 2.5px;
+            opacity: 0.7;
+        }
+        .gen-label-bg {
+            fill: rgba(26, 26, 46, 0.85);
+            rx: 16;
+            ry: 16;
         }
         .gen-label-text {
             font-family: 'Cinzel', serif;
@@ -148,6 +169,7 @@
             fill: var(--accent-gold);
             font-weight: 700;
             text-anchor: middle;
+            dominant-baseline: middle;
         }
         .tooltip {
             position: absolute;
@@ -163,6 +185,18 @@
             max-width: 250px;
         }
         .tooltip.show { opacity: 1; }
+        .tooltip-name {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+        .tooltip-detail {
+            font-size: 0.8rem;
+            color: #666;
+            line-height: 1.5;
+        }
         .admin-toggle {
             position: fixed;
             bottom: 30px;
@@ -177,6 +211,11 @@
             font-size: 1.3rem;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             z-index: 200;
+            transition: all 0.3s ease;
+        }
+        .admin-toggle:hover {
+            transform: scale(1.1) rotate(90deg);
+            background: var(--accent-gold);
         }
         #admin-panel {
             display: none;
@@ -242,10 +281,9 @@
     </header>
 
     <div class="controls">
-        <button class="control-btn active" onclick="setView('flow')">📊 Flowchart</button>
+        <button class="control-btn active" onclick="resetZoom()">↺ Center View</button>
         <button class="control-btn" onclick="zoomIn()">🔍 Zoom In</button>
         <button class="control-btn" onclick="zoomOut()">🔍 Zoom Out</button>
-        <button class="control-btn" onclick="resetZoom()">↺ Reset</button>
         <div class="legend">
             <span><span class="legend-dot female"></span>Female</span>
             <span><span class="legend-dot male"></span>Male</span>
@@ -290,10 +328,9 @@
     </div>
 
     <script>
-        // Check if D3 loaded
         if (typeof d3 === 'undefined') {
             document.getElementById('chart-wrapper').innerHTML = 
-                '<div style="text-align:center;padding:50px;color:red;"><h3>Error: D3.js failed to load</h3><p>Please check your internet connection and refresh.</p></div>';
+                '<div style="text-align:center;padding:50px;color:red;"><h3>Error: D3.js failed to load</h3></div>';
             throw new Error('D3 not loaded');
         }
 
@@ -302,7 +339,7 @@
         let svg, g, zoomBehavior;
 
         const generationLabels = {
-            0: "Root Ancestor",
+            0: "👑 Root Ancestor",
             1: "Great Great Grandparents",
             2: "Great Grandparents",
             3: "Grandparents",
@@ -312,23 +349,15 @@
 
         async function loadTree() {
             try {
-                console.log('Fetching familyData.json...');
                 const response = await fetch('./familyData.json');
-                console.log('Response status:', response.status);
-
-                if (!response.ok) {
-                    throw new Error('HTTP ' + response.status);
-                }
-
+                if (!response.ok) throw new Error('HTTP ' + response.status);
                 familyData = await response.json();
-                console.log('Loaded', familyData.length, 'family members');
-
                 renderFlowchart();
                 populateParentSelect();
             } catch (err) {
-                console.error("Error loading JSON:", err);
+                console.error("Error:", err);
                 document.getElementById('chart-wrapper').innerHTML = 
-                    '<div style="text-align:center;padding:50px;color:#999;"><h3>Error loading family data</h3><p>' + err.message + '</p><p>Please check that familyData.json exists in the same directory.</p></div>';
+                    '<div style="text-align:center;padding:50px;color:#999;"><h3>Error loading data</h3><p>' + err.message + '</p></div>';
             }
         }
 
@@ -354,32 +383,35 @@
                 }
             });
 
-            if (!rootData) {
-                container.innerHTML = '<div style="text-align:center;padding:50px;color:red;"><h3>No root node found</h3></div>';
-                return;
-            }
+            if (!rootData) return;
 
-            console.log('Root node:', rootData.name);
-            console.log('Root children:', rootData.children.length);
+            const cardWidth = 260;
+            const cardHeight = 80;
+            const levelSpacing = 140;  // vertical space between generations
+            const siblingSpacing = 320; // horizontal space between siblings
 
-            const cardWidth = 240;
-            const cardHeight = 75;
-            const levelSpacing = 300;
-            const siblingSpacing = 90;
-
-            // Create D3 hierarchy
             const root = d3.hierarchy(rootData);
-            console.log('D3 hierarchy created, height:', root.height);
 
-            // Count leaves manually as fallback
-            let leafCount = 0;
+            // Calculate tree dimensions
+            const treeLayout = d3.tree()
+                .nodeSize([siblingSpacing, levelSpacing]);
+
+            treeLayout(root);
+
+            // Calculate bounds
+            let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
             root.each(d => {
-                if (!d.children || d.children.length === 0) leafCount++;
+                if (d.x < minX) minX = d.x;
+                if (d.x > maxX) maxX = d.x;
+                if (d.y < minY) minY = d.y;
+                if (d.y > maxY) maxY = d.y;
             });
-            console.log('Leaf count:', leafCount);
 
-            const chartHeight = Math.max(1400, leafCount * siblingSpacing);
-            const chartWidth = (root.height + 1) * levelSpacing + 200;
+            const padding = 100;
+            const chartWidth = (maxX - minX) + cardWidth + padding * 2;
+            const chartHeight = (maxY - minY) + cardHeight + padding * 2 + 80;
+            const offsetX = padding - minX + cardWidth / 2;
+            const offsetY = padding + 60;
 
             svg = d3.select("#chart-wrapper")
                 .append("svg")
@@ -402,24 +434,48 @@
             maleGrad.append("stop").attr("offset", "0%").attr("stop-color", "#f0f8ff");
             maleGrad.append("stop").attr("offset", "100%").attr("stop-color", "#d6e8f5");
 
-            g = svg.append("g").attr("transform", "translate(80, 60)");
+            g = svg.append("g");
 
             zoomBehavior = d3.zoom()
-                .scaleExtent([0.3, 2])
+                .scaleExtent([0.2, 2])
                 .on("zoom", (event) => {
                     g.attr("transform", event.transform);
-                    currentZoom = event.transform.k;
                 });
 
-            svg.call(zoomBehavior)
-               .call(zoomBehavior.transform, d3.zoomIdentity.translate(80, 60).scale(currentZoom));
+            svg.call(zoomBehavior);
 
-            const treeLayout = d3.tree().size([chartHeight - 120, chartWidth - 350]);
-            treeLayout(root);
+            // Generation band backgrounds
+            const maxDepth = root.height;
+            for (let i = 0; i <= maxDepth; i++) {
+                const y = offsetY + i * levelSpacing - levelSpacing / 2;
+                g.append("rect")
+                    .attr("x", -padding)
+                    .attr("y", y)
+                    .attr("width", chartWidth)
+                    .attr("height", levelSpacing)
+                    .attr("fill", i % 2 === 0 ? "rgba(212,165,116,0.04)" : "rgba(107,179,217,0.04)")
+                    .style("pointer-events", "none");
 
-            const linkGen = d3.linkHorizontal()
-                .x(d => d.y)
-                .y(d => d.x);
+                // Generation label on the left
+                const labelText = generationLabels[i] || `Generation ${i}`;
+                g.append("rect")
+                    .attr("class", "gen-label-bg")
+                    .attr("x", 10)
+                    .attr("y", y + levelSpacing / 2 - 14)
+                    .attr("width", 180)
+                    .attr("height", 28);
+
+                g.append("text")
+                    .attr("class", "gen-label-text")
+                    .attr("x", 100)
+                    .attr("y", y + levelSpacing / 2 + 1)
+                    .text(labelText);
+            }
+
+            // Draw links (vertical tree style)
+            const linkGen = d3.linkVertical()
+                .x(d => d.x + offsetX)
+                .y(d => d.y + offsetY);
 
             g.selectAll(".link")
                 .data(root.links())
@@ -428,90 +484,83 @@
                 .attr("class", "link")
                 .attr("d", linkGen);
 
-            // Generation labels
-            const maxDepth = root.height;
-            for (let i = 0; i <= maxDepth; i++) {
-                const x = i * levelSpacing - 20;
-                g.append("rect")
-                    .attr("x", x)
-                    .attr("y", -40)
-                    .attr("width", levelSpacing - 10)
-                    .attr("height", chartHeight)
-                    .attr("fill", i % 2 === 0 ? "rgba(212,165,116,0.03)" : "rgba(107,179,217,0.03)")
-                    .attr("rx", 10)
-                    .style("pointer-events", "none");
-
-                const labelText = generationLabels[i] || `Generation ${i}`;
-                g.append("text")
-                    .attr("class", "gen-label-text")
-                    .attr("x", x + (levelSpacing - 10) / 2)
-                    .attr("y", -15)
-                    .text(labelText);
-            }
-
             // Draw nodes
             const node = g.selectAll(".node-group")
                 .data(root.descendants())
                 .enter()
                 .append("g")
                 .attr("class", "node-group")
-                .attr("transform", d => `translate(${d.y},${d.x - cardHeight/2})`)
+                .attr("transform", d => `translate(${d.x + offsetX - cardWidth/2},${d.y + offsetY - cardHeight/2})`)
                 .on("mouseenter", showTooltip)
                 .on("mouseleave", hideTooltip);
 
+            // Card background
             node.append("rect")
                 .attr("class", d => `node-rect ${d.data.gender}`)
                 .attr("width", cardWidth)
                 .attr("height", cardHeight)
-                .attr("rx", 12)
-                .attr("ry", 12);
+                .attr("rx", 14)
+                .attr("ry", 14);
 
+            // Gender icon
             node.append("text")
-                .attr("class", "node-icon")
-                .attr("x", 15)
-                .attr("y", 22)
+                .attr("x", 18)
+                .attr("y", 24)
                 .text(d => d.data.gender === 'F' ? '♀' : '♂')
-                .attr("fill", d => d.data.gender === 'F' ? '#e8a4c9' : '#6bb3d9');
+                .attr("fill", d => d.data.gender === 'F' ? '#e8a4c9' : '#6bb3d9')
+                .attr("font-size", "16px")
+                .attr("font-weight", "bold")
+                .style("pointer-events", "none");
 
+            // Name
             node.append("text")
                 .attr("class", "node-text")
-                .attr("x", 35)
-                .attr("y", 22)
+                .attr("x", 40)
+                .attr("y", 24)
                 .text(d => {
                     const name = d.data.name;
-                    return name.length > 28 ? name.substring(0, 26) + '...' : name;
+                    return name.length > 30 ? name.substring(0, 28) + '...' : name;
                 });
 
+            // Spouse
             node.append("text")
                 .attr("class", "node-spouse")
-                .attr("x", 35)
-                .attr("y", 40)
+                .attr("x", 40)
+                .attr("y", 44)
                 .text(d => {
                     if (!d.data.spouse) return '';
                     const spouse = d.data.spouse;
-                    return spouse.length > 30 ? '💍 ' + spouse.substring(0, 28) + '...' : '💍 ' + spouse;
+                    return spouse.length > 32 ? '💍 ' + spouse.substring(0, 30) + '...' : '💍 ' + spouse;
                 });
 
             // Child count badge
             node.filter(d => d.children && d.children.length > 0)
                 .append("circle")
-                .attr("cx", cardWidth - 15)
-                .attr("cy", cardHeight / 2)
-                .attr("r", 10)
+                .attr("cx", cardWidth - 18)
+                .attr("cy", cardHeight - 18)
+                .attr("r", 11)
                 .attr("fill", "#1a1a2e")
-                .attr("opacity", 0.8);
+                .attr("opacity", 0.85);
 
             node.filter(d => d.children && d.children.length > 0)
                 .append("text")
-                .attr("x", cardWidth - 15)
-                .attr("y", cardHeight / 2 + 4)
+                .attr("class", "node-badge")
+                .attr("x", cardWidth - 18)
+                .attr("y", cardHeight - 14)
                 .attr("text-anchor", "middle")
-                .attr("fill", "white")
-                .attr("font-size", "10px")
-                .attr("font-weight", "600")
                 .text(d => d.children.length);
 
-            console.log('Render complete! Nodes drawn:', root.descendants().length);
+            // Initial zoom to fit
+            const initialScale = Math.min(
+                (window.innerWidth - 40) / chartWidth,
+                (window.innerHeight - 200) / chartHeight,
+                1
+            );
+            const initialX = (window.innerWidth - chartWidth * initialScale) / 2;
+            const initialY = 20;
+
+            svg.call(zoomBehavior.transform, 
+                d3.zoomIdentity.translate(initialX, initialY).scale(initialScale));
         }
 
         function showTooltip(event, d) {
@@ -533,22 +582,16 @@
             document.getElementById('tooltip').classList.remove('show');
         }
 
-        function setView(view) {
-            document.querySelectorAll('.control-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-        }
-
         function zoomIn() {
-            svg.transition().duration(300).call(zoomBehavior.scaleBy, 1.2);
+            svg.transition().duration(300).call(zoomBehavior.scaleBy, 1.3);
         }
 
         function zoomOut() {
-            svg.transition().duration(300).call(zoomBehavior.scaleBy, 0.8);
+            svg.transition().duration(300).call(zoomBehavior.scaleBy, 0.7);
         }
 
         function resetZoom() {
-            currentZoom = 1;
-            svg.transition().duration(500).call(zoomBehavior.transform, d3.zoomIdentity.translate(80, 60).scale(1));
+            svg.transition().duration(500).call(zoomBehavior.transform, d3.zoomIdentity);
         }
 
         function populateParentSelect() {
@@ -601,8 +644,6 @@
             alert("New member added! Updated familyData.json downloaded.");
         }
 
-        // Start
-        console.log('Page loaded, starting...');
         loadTree();
     </script>
 </body>
