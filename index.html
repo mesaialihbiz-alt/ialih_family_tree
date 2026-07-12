@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Phawa Ialih Family Tree — Matrilineal Lineage</title>
+    <title>Phawa Ialih Family Tree</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -31,21 +30,12 @@
             background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 100%);
             color: white;
             position: relative;
-            overflow: hidden;
-        }
-        header::before {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-            opacity: 0.5;
         }
         h1 {
             font-family: 'Cinzel', serif;
             font-size: clamp(1.8rem, 4vw, 3rem);
             font-weight: 700;
             letter-spacing: 3px;
-            position: relative;
             text-shadow: 0 2px 10px rgba(0,0,0,0.3);
         }
         .tagline {
@@ -54,7 +44,6 @@
             font-size: 1.1rem;
             color: var(--accent-gold);
             margin-top: 8px;
-            letter-spacing: 1px;
         }
         .matrilineal-badge {
             display: inline-flex;
@@ -70,7 +59,6 @@
             margin-top: 12px;
             color: var(--accent-gold);
         }
-        .matrilineal-badge::before { content: '♀'; font-size: 1rem; }
         .controls {
             display: flex;
             justify-content: center;
@@ -95,17 +83,8 @@
             font-weight: 500;
             color: var(--primary);
             transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 6px;
         }
-        .control-btn:hover {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-            transform: translateY(-1px);
-        }
-        .control-btn.active {
+        .control-btn:hover, .control-btn.active {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
@@ -116,8 +95,7 @@
             align-items: center;
             font-size: 0.8rem;
         }
-        .legend-item { display: flex; align-items: center; gap: 6px; }
-        .legend-dot { width: 12px; height: 12px; border-radius: 3px; }
+        .legend-dot { width: 12px; height: 12px; border-radius: 3px; display: inline-block; margin-right: 5px; }
         .legend-dot.female { background: var(--female-border); }
         .legend-dot.male { background: var(--male-border); }
         #chart-wrapper {
@@ -125,9 +103,7 @@
             min-height: 100vh;
             padding: 40px 20px;
             overflow: auto;
-            cursor: grab;
         }
-        #chart-wrapper:active { cursor: grabbing; }
         #chart-wrapper svg { display: block; margin: 0 auto; }
         .node-group { cursor: pointer; }
         .node-rect {
@@ -135,11 +111,7 @@
             stroke-width: 2px;
             rx: 12;
             ry: 12;
-            transition: all 0.3s ease;
             filter: drop-shadow(0 2px 8px rgba(0,0,0,0.08));
-        }
-        .node-group:hover .node-rect {
-            filter: drop-shadow(0 6px 20px rgba(0,0,0,0.15));
         }
         .node-rect.female {
             fill: url(#femaleGradient);
@@ -163,23 +135,12 @@
             font-style: italic;
             pointer-events: none;
         }
-        .node-icon {
-            font-size: 14px;
-            pointer-events: none;
-        }
         .link {
             fill: none;
             stroke: var(--line-color);
             stroke-width: 2px;
             stroke-dasharray: 6,4;
             opacity: 0.6;
-            transition: all 0.3s ease;
-        }
-        .link:hover {
-            stroke: var(--line-active);
-            stroke-width: 3px;
-            opacity: 1;
-            stroke-dasharray: none;
         }
         .gen-label-text {
             font-family: 'Cinzel', serif;
@@ -187,7 +148,6 @@
             fill: var(--accent-gold);
             font-weight: 700;
             text-anchor: middle;
-            dominant-baseline: middle;
         }
         .tooltip {
             position: absolute;
@@ -203,18 +163,6 @@
             max-width: 250px;
         }
         .tooltip.show { opacity: 1; }
-        .tooltip-name {
-            font-family: 'Playfair Display', serif;
-            font-weight: 700;
-            font-size: 1rem;
-            color: var(--primary);
-            margin-bottom: 4px;
-        }
-        .tooltip-detail {
-            font-size: 0.8rem;
-            color: #666;
-            line-height: 1.5;
-        }
         .admin-toggle {
             position: fixed;
             bottom: 30px;
@@ -228,15 +176,7 @@
             cursor: pointer;
             font-size: 1.3rem;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
             z-index: 200;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .admin-toggle:hover {
-            transform: scale(1.1) rotate(90deg);
-            background: var(--accent-gold);
         }
         #admin-panel {
             display: none;
@@ -251,21 +191,9 @@
             max-width: 450px;
             width: 90%;
             z-index: 300;
-            border: 1px solid #e8e0d4;
-        }
-        #admin-panel h3 {
-            font-family: 'Cinzel', serif;
-            margin-bottom: 20px;
-            color: var(--primary);
         }
         .form-group { margin-bottom: 14px; }
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            font-size: 0.85rem;
-            color: #555;
-        }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 500; font-size: 0.85rem; color: #555; }
         .form-group input, .form-group select {
             width: 100%;
             padding: 10px 12px;
@@ -273,12 +201,6 @@
             border-radius: 8px;
             font-family: 'Inter', sans-serif;
             font-size: 0.9rem;
-            transition: border-color 0.2s;
-        }
-        .form-group input:focus, .form-group select:focus {
-            outline: none;
-            border-color: var(--accent-gold);
-            box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.1);
         }
         .btn-submit {
             background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
@@ -291,11 +213,6 @@
             font-weight: 600;
             font-family: 'Inter', sans-serif;
             font-size: 0.9rem;
-            transition: all 0.3s;
-        }
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(26, 26, 46, 0.3);
         }
         .overlay {
             display: none;
@@ -303,7 +220,6 @@
             top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(0,0,0,0.5);
             z-index: 250;
-            backdrop-filter: blur(4px);
         }
         .close-btn {
             position: absolute;
@@ -314,19 +230,6 @@
             font-size: 1.5rem;
             cursor: pointer;
             color: #999;
-            transition: color 0.2s;
-        }
-        .close-btn:hover { color: var(--primary); }
-        @media (max-width: 768px) {
-            .controls { gap: 8px; padding: 12px; }
-            .control-btn { padding: 6px 12px; font-size: 0.75rem; }
-            .legend { gap: 12px; }
-            #chart-wrapper { padding: 20px 10px; }
-        }
-        @media print {
-            .controls, .admin-toggle, .overlay, #admin-panel { display: none !important; }
-            body { background: white; }
-            #chart-wrapper { overflow: visible; }
         }
     </style>
 <base target="_blank">
@@ -335,27 +238,28 @@
     <header>
         <h1>Phawa Ialih Family Tree</h1>
         <p class="tagline">Matrilineal Lineage Flowchart</p>
-        <div class="matrilineal-badge">Matrilineal Heritage</div>
+        <div class="matrilineal-badge">♀ Matrilineal Heritage</div>
     </header>
 
     <div class="controls">
         <button class="control-btn active" onclick="setView('flow')">📊 Flowchart</button>
-        <button class="control-btn" onclick="setView('tree')">🌳 Tree</button>
         <button class="control-btn" onclick="zoomIn()">🔍 Zoom In</button>
         <button class="control-btn" onclick="zoomOut()">🔍 Zoom Out</button>
         <button class="control-btn" onclick="resetZoom()">↺ Reset</button>
-        <button class="control-btn" onclick="expandAll()">⬇ Expand All</button>
-        <button class="control-btn" onclick="collapseAll()">⬆ Collapse All</button>
         <div class="legend">
-            <div class="legend-item"><div class="legend-dot female"></div> Female</div>
-            <div class="legend-item"><div class="legend-dot male"></div> Male</div>
+            <span><span class="legend-dot female"></span>Female</span>
+            <span><span class="legend-dot male"></span>Male</span>
         </div>
     </div>
 
-    <div id="chart-wrapper"></div>
+    <div id="chart-wrapper">
+        <div style="text-align:center;padding:50px;color:#999;">
+            <h3>Loading family data...</h3>
+        </div>
+    </div>
     <div class="tooltip" id="tooltip"></div>
 
-    <button class="admin-toggle" onclick="toggleAdmin()" title="Admin Panel">⚙️</button>
+    <button class="admin-toggle" onclick="toggleAdmin()">⚙️</button>
 
     <div class="overlay" id="overlay" onclick="toggleAdmin()"></div>
     <div id="admin-panel">
@@ -386,9 +290,15 @@
     </div>
 
     <script>
+        // Check if D3 loaded
+        if (typeof d3 === 'undefined') {
+            document.getElementById('chart-wrapper').innerHTML = 
+                '<div style="text-align:center;padding:50px;color:red;"><h3>Error: D3.js failed to load</h3><p>Please check your internet connection and refresh.</p></div>';
+            throw new Error('D3 not loaded');
+        }
+
         let familyData = [];
         let currentZoom = 1;
-        let currentView = 'flow';
         let svg, g, zoomBehavior;
 
         const generationLabels = {
@@ -402,15 +312,23 @@
 
         async function loadTree() {
             try {
+                console.log('Fetching familyData.json...');
                 const response = await fetch('./familyData.json');
-                if (!response.ok) throw new Error('Failed to load');
+                console.log('Response status:', response.status);
+
+                if (!response.ok) {
+                    throw new Error('HTTP ' + response.status);
+                }
+
                 familyData = await response.json();
+                console.log('Loaded', familyData.length, 'family members');
+
                 renderFlowchart();
                 populateParentSelect();
             } catch (err) {
                 console.error("Error loading JSON:", err);
                 document.getElementById('chart-wrapper').innerHTML = 
-                    '<div style="text-align:center;padding:50px;color:#999;"><h3>Loading family data...</h3><p>If this persists, check that familyData.json exists.</p></div>';
+                    '<div style="text-align:center;padding:50px;color:#999;"><h3>Error loading family data</h3><p>' + err.message + '</p><p>Please check that familyData.json exists in the same directory.</p></div>';
             }
         }
 
@@ -418,31 +336,49 @@
             const container = document.getElementById('chart-wrapper');
             container.innerHTML = '';
 
-            const dataMap = new Map(familyData.map(d => [d.id, { ...d }]));
-            let rootData;
+            // Build tree structure
+            const dataMap = new Map();
+            familyData.forEach(d => {
+                dataMap.set(d.id, { ...d, children: [] });
+            });
 
+            let rootData = null;
             dataMap.forEach(d => {
-                if (!d.parent) {
+                if (!d.parent || d.parent === '') {
                     rootData = d;
                 } else {
-                    const parentNode = dataMap.get(d.parent);
-                    if (parentNode) {
-                        if (!parentNode.children) parentNode.children = [];
-                        parentNode.children.push(d);
+                    const parent = dataMap.get(d.parent);
+                    if (parent) {
+                        parent.children.push(d);
                     }
                 }
             });
 
-            if (!rootData) return;
+            if (!rootData) {
+                container.innerHTML = '<div style="text-align:center;padding:50px;color:red;"><h3>No root node found</h3></div>';
+                return;
+            }
+
+            console.log('Root node:', rootData.name);
+            console.log('Root children:', rootData.children.length);
 
             const cardWidth = 240;
             const cardHeight = 75;
-            const levelSpacing = currentView === 'flow' ? 300 : 280;
+            const levelSpacing = 300;
             const siblingSpacing = 90;
 
+            // Create D3 hierarchy
             const root = d3.hierarchy(rootData);
-            const totalLeaves = root.getLeaves().length;
-            const chartHeight = Math.max(1400, totalLeaves * siblingSpacing);
+            console.log('D3 hierarchy created, height:', root.height);
+
+            // Count leaves manually as fallback
+            let leafCount = 0;
+            root.each(d => {
+                if (!d.children || d.children.length === 0) leafCount++;
+            });
+            console.log('Leaf count:', leafCount);
+
+            const chartHeight = Math.max(1400, leafCount * siblingSpacing);
             const chartWidth = (root.height + 1) * levelSpacing + 200;
 
             svg = d3.select("#chart-wrapper")
@@ -492,6 +428,7 @@
                 .attr("class", "link")
                 .attr("d", linkGen);
 
+            // Generation labels
             const maxDepth = root.height;
             for (let i = 0; i <= maxDepth; i++) {
                 const x = i * levelSpacing - 20;
@@ -512,6 +449,7 @@
                     .text(labelText);
             }
 
+            // Draw nodes
             const node = g.selectAll(".node-group")
                 .data(root.descendants())
                 .enter()
@@ -554,6 +492,7 @@
                     return spouse.length > 30 ? '💍 ' + spouse.substring(0, 28) + '...' : '💍 ' + spouse;
                 });
 
+            // Child count badge
             node.filter(d => d.children && d.children.length > 0)
                 .append("circle")
                 .attr("cx", cardWidth - 15)
@@ -571,6 +510,8 @@
                 .attr("font-size", "10px")
                 .attr("font-weight", "600")
                 .text(d => d.children.length);
+
+            console.log('Render complete! Nodes drawn:', root.descendants().length);
         }
 
         function showTooltip(event, d) {
@@ -579,8 +520,8 @@
             let html = `<div class="tooltip-name">${data.name}</div>`;
             html += `<div class="tooltip-detail">Gender: ${data.gender === 'F' ? 'Female ♀' : 'Male ♂'}</div>`;
             if (data.spouse) html += `<div class="tooltip-detail">Spouse: ${data.spouse}</div>`;
-            if (d.children) html += `<div class="tooltip-detail">Children: ${d.children.length}</div>`;
-            if (d.parent) html += `<div class="tooltip-detail">Parent: ${d.parent.data.name}</div>`;
+            if (d.children && d.children.length > 0) html += `<div class="tooltip-detail">Children: ${d.children.length}</div>`;
+            if (d.parent && d.parent.data) html += `<div class="tooltip-detail">Parent: ${d.parent.data.name}</div>`;
 
             tooltip.innerHTML = html;
             tooltip.style.left = (event.pageX + 15) + 'px';
@@ -593,10 +534,8 @@
         }
 
         function setView(view) {
-            currentView = view;
             document.querySelectorAll('.control-btn').forEach(btn => btn.classList.remove('active'));
             event.target.classList.add('active');
-            renderFlowchart();
         }
 
         function zoomIn() {
@@ -611,9 +550,6 @@
             currentZoom = 1;
             svg.transition().duration(500).call(zoomBehavior.transform, d3.zoomIdentity.translate(80, 60).scale(1));
         }
-
-        function expandAll() { renderFlowchart(); }
-        function collapseAll() { renderFlowchart(); }
 
         function populateParentSelect() {
             const select = document.getElementById('parent-select');
@@ -662,19 +598,11 @@
             populateParentSelect();
             document.getElementById('member-form').reset();
             toggleAdmin();
-            alert("New member added! Updated familyData.json downloaded. Update GitHub to save permanently.");
+            alert("New member added! Updated familyData.json downloaded.");
         }
 
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                document.getElementById('admin-panel').style.display = 'none';
-                document.getElementById('overlay').style.display = 'none';
-            }
-            if (e.key === '+' || e.key === '=') zoomIn();
-            if (e.key === '-') zoomOut();
-            if (e.key === '0') resetZoom();
-        });
-
+        // Start
+        console.log('Page loaded, starting...');
         loadTree();
     </script>
 </body>
