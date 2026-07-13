@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#1a1a2e">
     <title>Phawa Ialih Family Tree</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -498,19 +499,24 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            background: var(--primary);
+            background: rgba(26, 26, 46, 0.6);
             color: white;
-            border: none;
+            border: 2px solid rgba(255,255,255,0.3);
             cursor: pointer;
-            font-size: 1.1rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-size: 1rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
             z-index: 200;
             transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
         }
-        .admin-toggle:hover { transform: scale(1.1); background: var(--accent-gold); }
+        .admin-toggle:hover { 
+            transform: scale(1.1); 
+            background: var(--accent-gold);
+            border-color: var(--accent-gold);
+        }
 
         #admin-panel {
             display: none;
@@ -678,7 +684,156 @@
             font-weight: 600;
             cursor: pointer;
         }
-    </style>
+    
+        /* ===== MOBILE RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            header {
+                padding: 8px 10px 6px;
+            }
+            h1 {
+                font-size: 1.1rem;
+                letter-spacing: 1px;
+            }
+            .tagline {
+                font-size: 0.7rem;
+            }
+            .matrilineal-badge {
+                font-size: 0.55rem;
+                padding: 2px 8px;
+            }
+
+            .controls {
+                gap: 4px;
+                padding: 6px 8px;
+            }
+            .control-btn {
+                padding: 4px 8px;
+                font-size: 0.65rem;
+                border-radius: 14px;
+            }
+            .legend {
+                font-size: 0.6rem;
+                gap: 8px;
+            }
+
+            /* Cards smaller on mobile */
+            .node-card {
+                rx: 12;
+                ry: 12;
+            }
+            .node-name {
+                font-size: 10px;
+            }
+            .node-designation {
+                font-size: 8px;
+            }
+            .node-spouse {
+                font-size: 9px;
+            }
+            .node-photo-text {
+                font-size: 14px;
+            }
+
+            /* Modals full width on mobile */
+            .modal, .submit-modal {
+                width: 95%;
+                max-width: 95%;
+                border-radius: 16px;
+            }
+            .modal-header, .submit-modal-header {
+                padding: 20px 20px 15px;
+            }
+            .modal-body, .submit-modal-body {
+                padding: 18px 20px 20px;
+            }
+            .modal-avatar {
+                width: 70px;
+                height: 70px;
+                font-size: 28px;
+            }
+            .modal-name {
+                font-size: 1.1rem;
+            }
+
+            /* Admin panel full width */
+            #admin-panel {
+                max-width: 95%;
+                padding: 18px;
+            }
+
+            /* Admin toggle smaller and more subtle */
+            .admin-toggle {
+                width: 36px;
+                height: 36px;
+                font-size: 0.85rem;
+                bottom: 12px;
+                right: 12px;
+                background: rgba(26, 26, 46, 0.5);
+            }
+
+            /* Scroll hint smaller */
+            .scroll-hint {
+                font-size: 0.6rem;
+                padding: 6px 10px;
+                bottom: 65px;
+            }
+
+            /* Toast smaller */
+            .toast {
+                font-size: 0.8rem;
+                padding: 10px 16px;
+                max-width: 260px;
+            }
+
+            /* Tooltip hidden on mobile (touch conflicts) */
+            .tooltip {
+                display: none !important;
+            }
+
+            /* Generation labels smaller */
+            .gen-label-pill {
+                rx: 10;
+                ry: 10;
+            }
+            .gen-label-text {
+                font-size: 9px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .controls {
+                gap: 3px;
+                padding: 5px 6px;
+            }
+            .control-btn {
+                padding: 3px 6px;
+                font-size: 0.6rem;
+            }
+            h1 {
+                font-size: 0.95rem;
+            }
+            .modal-section-text {
+                font-size: 0.85rem;
+            }
+            .modal-tag {
+                font-size: 0.75rem;
+                padding: 4px 10px;
+            }
+        }
+
+        /* Touch-friendly improvements */
+        @media (pointer: coarse) {
+            .node-group {
+                /* Larger touch target on touch devices */
+            }
+            .control-btn {
+                min-height: 32px;
+            }
+            .modal-btn, .btn-submit, .admin-login-box button {
+                min-height: 44px;
+            }
+        }
+</style>
 <base target="_blank">
 </head>
 <body>
@@ -690,10 +845,9 @@
         </header>
 
         <div class="controls">
-            <button class="control-btn" onclick="fitToScreen()">🖥️ Fit to Screen</button>
-            <button class="control-btn" onclick="resetView()">🔄 Reset View</button>
-            <button class="control-btn" onclick="zoomIn()">🔍 Zoom In</button>
-            <button class="control-btn" onclick="zoomOut()">🔍 Zoom Out</button>
+            <button class="control-btn" onclick="fitToScreen()">🖥️ Fit Screen</button>
+            <button class="control-btn" onclick="zoomIn()">🔍 In</button>
+            <button class="control-btn" onclick="zoomOut()">🔍 Out</button>
             <button class="control-btn" onclick="openSubmitModal()">➕ Suggest Member</button>
             <button class="control-btn pending-btn" id="pendingBtn" onclick="showPending()" style="display:none;">
                 ⏳ <span id="pendingCount">0</span> Pending
@@ -789,7 +943,7 @@
     </div>
 
     <!-- Admin Panel -->
-    <button class="admin-toggle" onclick="openAdminLogin()">⚙️</button>
+    <button class="admin-toggle" onclick="openAdminLogin()" title="Admin Panel">⚙️</button>
     <div class="overlay" id="overlay" onclick="closeAdminPanel()"></div>
     <div id="admin-panel">
         <button class="close-btn" onclick="closeAdminPanel()">&times;</button>
@@ -1556,18 +1710,14 @@
             const wrapperW = wrapper.clientWidth;
             const wrapperH = wrapper.clientHeight;
 
-            // Calculate scale to fit the whole tree
-            let scale = Math.min(
-                (wrapperW - 60) / chartWidth,
-                (wrapperH - 60) / chartHeight
+            const scale = Math.min(
+                (wrapperW - 40) / chartWidth,
+                (wrapperH - 40) / chartHeight,
+                0.9
             );
 
-            // Clamp: minimum 0.55x so text stays readable
-            // maximum 1.0x so it doesn't overflow on small trees
-            scale = Math.max(0.55, Math.min(scale, 1.0));
-
             const tx = (wrapperW - chartWidth * scale) / 2;
-            const ty = 30;
+            const ty = 20;
 
             svg.transition().duration(600).call(
                 zoomBehavior.transform,
