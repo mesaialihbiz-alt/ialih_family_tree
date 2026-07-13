@@ -499,24 +499,19 @@
             position: fixed;
             bottom: 20px;
             right: 20px;
-            width: 44px;
-            height: 44px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
-            background: rgba(26, 26, 46, 0.6);
+            background: var(--primary);
             color: white;
-            border: 2px solid rgba(255,255,255,0.3);
+            border: none;
             cursor: pointer;
-            font-size: 1rem;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             z-index: 200;
             transition: all 0.3s ease;
-            backdrop-filter: blur(4px);
         }
-        .admin-toggle:hover { 
-            transform: scale(1.1); 
-            background: var(--accent-gold);
-            border-color: var(--accent-gold);
-        }
+        .admin-toggle:hover { transform: scale(1.1); background: var(--accent-gold); }
 
         #admin-panel {
             display: none;
@@ -685,6 +680,140 @@
             cursor: pointer;
         }
     
+        /* ===== ADMIN TABS ===== */
+        .admin-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .admin-tab {
+            padding: 8px 14px;
+            border: none;
+            background: transparent;
+            color: #666;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .admin-tab:hover {
+            background: #f0f0f0;
+        }
+        .admin-tab.active {
+            background: var(--primary);
+            color: white;
+        }
+        .admin-panel-content {
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== DIFF VIEW ===== */
+        .diff-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            margin-bottom: 12px;
+        }
+        .diff-table th {
+            text-align: left;
+            padding: 6px 8px;
+            background: #f5f5f5;
+            font-weight: 600;
+            color: #555;
+            border-bottom: 2px solid #ddd;
+        }
+        .diff-table td {
+            padding: 6px 8px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+        .diff-table td:first-child {
+            font-weight: 600;
+            color: #666;
+            width: 80px;
+        }
+        .diff-old {
+            color: #999;
+            text-decoration: line-through;
+            font-size: 0.75rem;
+        }
+        .diff-new {
+            color: var(--success);
+            font-weight: 600;
+        }
+        .diff-unchanged {
+            color: #666;
+        }
+        .edit-meta {
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 8px;
+        }
+        .edit-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .edit-actions button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .edit-actions .copy-btn {
+            background: var(--accent-gold);
+            color: white;
+        }
+        .edit-actions .done-btn {
+            background: var(--success);
+            color: white;
+        }
+        .edit-actions .reject-btn {
+            background: var(--danger);
+            color: white;
+        }
+        .console-instructions {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 12px;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #555;
+            line-height: 1.6;
+        }
+        .console-instructions code {
+            background: #e8e8e8;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.75rem;
+        }
+        .json-preview {
+            background: #1a1a2e;
+            color: #a0d0a0;
+            padding: 10px;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.75rem;
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 8px;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
         /* ===== MOBILE RESPONSIVE ===== */
         @media (max-width: 768px) {
             header {
@@ -760,15 +889,21 @@
                 max-width: 95%;
                 padding: 18px;
             }
+            .admin-tabs {
+                gap: 4px;
+            }
+            .admin-tab {
+                padding: 6px 10px;
+                font-size: 0.75rem;
+            }
 
-            /* Admin toggle smaller and more subtle */
+            /* Admin toggle smaller */
             .admin-toggle {
-                width: 36px;
-                height: 36px;
-                font-size: 0.85rem;
-                bottom: 12px;
-                right: 12px;
-                background: rgba(26, 26, 46, 0.5);
+                width: 40px;
+                height: 40px;
+                font-size: 0.9rem;
+                bottom: 15px;
+                right: 15px;
             }
 
             /* Scroll hint smaller */
@@ -798,6 +933,14 @@
             .gen-label-text {
                 font-size: 9px;
             }
+
+            /* Diff table scrollable */
+            .diff-table {
+                font-size: 0.75rem;
+            }
+            .diff-table td:first-child {
+                width: 60px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -823,13 +966,10 @@
 
         /* Touch-friendly improvements */
         @media (pointer: coarse) {
-            .node-group {
-                /* Larger touch target on touch devices */
-            }
             .control-btn {
                 min-height: 32px;
             }
-            .modal-btn, .btn-submit, .admin-login-box button {
+            .modal-btn, .btn-submit, .admin-login-box button, .admin-tab {
                 min-height: 44px;
             }
         }
@@ -845,9 +985,10 @@
         </header>
 
         <div class="controls">
-            <button class="control-btn" onclick="fitToScreen()">🖥️ Fit Screen</button>
-            <button class="control-btn" onclick="zoomIn()">🔍 In</button>
-            <button class="control-btn" onclick="zoomOut()">🔍 Out</button>
+            <button class="control-btn" onclick="fitToScreen()">🖥️ Fit to Screen</button>
+            <button class="control-btn" onclick="resetView()">🔄 Reset View</button>
+            <button class="control-btn" onclick="zoomIn()">🔍 Zoom In</button>
+            <button class="control-btn" onclick="zoomOut()">🔍 Zoom Out</button>
             <button class="control-btn" onclick="openSubmitModal()">➕ Suggest Member</button>
             <button class="control-btn pending-btn" id="pendingBtn" onclick="showPending()" style="display:none;">
                 ⏳ <span id="pendingCount">0</span> Pending
@@ -861,7 +1002,7 @@
         <div id="chart-wrapper"></div>
     </div>
 
-    <div class="scroll-hint">🖱️ Click cards for stories · Scroll/drag to explore</div>
+    <div class="scroll-hint">👆 Tap any card for their story · Drag to move · Scroll to zoom</div>
     <div class="tooltip" id="tooltip"></div>
     <div class="toast" id="toast"></div>
 
@@ -941,60 +1082,125 @@
             </form>
         </div>
     </div>
+    <!-- Edit Member Modal -->
+    <div class="modal-overlay" id="editOverlay" onclick="closeEditModal()"></div>
+    <div class="submit-modal" id="editModal">
+        <div class="submit-modal-header">
+            <button class="modal-close" onclick="closeEditModal()" style="top:10px;right:15px;">&times;</button>
+            <h3>✏️ Suggest an Edit</h3>
+            <p style="font-size:0.8rem;opacity:0.8;margin-top:5px;">Your edit will be reviewed before appearing on the tree</p>
+        </div>
+        <div class="submit-modal-body">
+            <form onsubmit="submitEdit(event)">
+                <input type="hidden" id="edit-target-id">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="edit-proposed-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Spouse Name</label>
+                    <input type="text" id="edit-proposed-spouse">
+                </div>
+                <div class="form-group">
+                    <label>Designation / Title</label>
+                    <input type="text" id="edit-proposed-designation">
+                </div>
+                <div class="form-group">
+                    <label>Bio / Story</label>
+                    <textarea id="edit-proposed-bio" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Hobbies & Interests</label>
+                    <input type="text" id="edit-proposed-hobbies">
+                </div>
+                <div class="form-group">
+                    <label>Fun Fact</label>
+                    <input type="text" id="edit-proposed-funfact">
+                </div>
+                <div class="form-group">
+                    <label>Your Name (optional)</label>
+                    <input type="text" id="edit-submitter" placeholder="Who is suggesting this edit?">
+                </div>
+                <button type="submit" class="btn-submit">📤 Submit Edit for Review</button>
+            </form>
+        </div>
+    </div>
+
 
     <!-- Admin Panel -->
-    <button class="admin-toggle" onclick="openAdminLogin()" title="Admin Panel">⚙️</button>
+    <button class="admin-toggle" onclick="openAdminLogin()">⚙️</button>
     <div class="overlay" id="overlay" onclick="closeAdminPanel()"></div>
     <div id="admin-panel">
         <button class="close-btn" onclick="closeAdminPanel()">&times;</button>
         <h3 style="font-family:Cinzel,serif;margin-bottom:15px;">⚙️ Admin Dashboard</h3>
 
-        <div id="pendingSection" style="display:none;">
-            <h4 style="font-size:0.9rem;margin-bottom:10px;color:var(--warning);">⏳ Pending Approvals</h4>
-            <div class="pending-list" id="pendingList"></div>
+        <!-- Admin Tabs -->
+        <div class="admin-tabs">
+            <button class="admin-tab active" onclick="switchAdminTab('members')" id="tab-members">➕ New Members</button>
+            <button class="admin-tab" onclick="switchAdminTab('edits')" id="tab-edits">✏️ Edits</button>
+            <button class="admin-tab" onclick="switchAdminTab('edit')" id="tab-edit">📝 Direct Edit</button>
         </div>
 
-        <h4 style="font-size:0.9rem;margin:15px 0 10px;">✏️ Edit Existing Member</h4>
-        <form id="edit-form" onsubmit="saveEdit(event)">
-            <div class="form-group">
-                <label>Select Person</label>
-                <select id="edit-select" onchange="loadForEdit()" required>
-                    <option value="">-- Choose someone --</option>
-                </select>
+        <!-- Tab: Pending New Members -->
+        <div id="panel-members" class="admin-panel-content">
+            <div id="pendingSection">
+                <h4 style="font-size:0.9rem;margin-bottom:10px;color:var(--warning);">⏳ Pending New Members</h4>
+                <div class="pending-list" id="pendingList"></div>
             </div>
-            <div class="form-group">
-                <label>Name</label>
-                <input type="text" id="edit-name" required>
+        </div>
+
+        <!-- Tab: Pending Edits -->
+        <div id="panel-edits" class="admin-panel-content" style="display:none;">
+            <div id="pendingEditsSection">
+                <h4 style="font-size:0.9rem;margin-bottom:10px;color:var(--warning);">⏳ Pending Edits</h4>
+                <div class="pending-list" id="pendingEditsList"></div>
             </div>
-            <div class="form-group">
-                <label>Gender</label>
-                <select id="edit-gender">
-                    <option value="F">Female</option>
-                    <option value="M">Male</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Spouse</label>
-                <input type="text" id="edit-spouse">
-            </div>
-            <div class="form-group">
-                <label>Designation</label>
-                <input type="text" id="edit-designation">
-            </div>
-            <div class="form-group">
-                <label>Bio</label>
-                <textarea id="edit-bio"></textarea>
-            </div>
-            <div class="form-group">
-                <label>Hobbies</label>
-                <input type="text" id="edit-hobbies">
-            </div>
-            <div class="form-group">
-                <label>Fun Fact</label>
-                <input type="text" id="edit-funfact">
-            </div>
-            <button type="submit" class="btn-submit">💾 Save Changes</button>
-        </form>
+        </div>
+
+        <!-- Tab: Direct Edit -->
+        <div id="panel-edit" class="admin-panel-content" style="display:none;">
+            <h4 style="font-size:0.9rem;margin:15px 0 10px;">✏️ Edit Existing Member</h4>
+            <form id="edit-form" onsubmit="saveEdit(event)">
+                <div class="form-group">
+                    <label>Select Person</label>
+                    <select id="edit-select" onchange="loadForEdit()" required>
+                        <option value="">-- Choose someone --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Name</label>
+                    <input type="text" id="edit-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Gender</label>
+                    <select id="edit-gender">
+                        <option value="F">Female</option>
+                        <option value="M">Male</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Spouse</label>
+                    <input type="text" id="edit-spouse">
+                </div>
+                <div class="form-group">
+                    <label>Designation</label>
+                    <input type="text" id="edit-designation">
+                </div>
+                <div class="form-group">
+                    <label>Bio</label>
+                    <textarea id="edit-bio"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Hobbies</label>
+                    <input type="text" id="edit-hobbies">
+                </div>
+                <div class="form-group">
+                    <label>Fun Fact</label>
+                    <input type="text" id="edit-funfact">
+                </div>
+                <button type="submit" class="btn-submit">💾 Save Changes</button>
+            </form>
+        </div>
     </div>
 
     <script>
@@ -1419,10 +1625,10 @@
                 `;
             }
 
-            // Admin actions (only show edit button)
+            // User actions: Suggest Edit (always visible)
             bodyHTML += `
                 <div class="modal-actions">
-                    <button class="modal-btn edit" onclick="editFromModal()">✏️ Edit</button>
+                    <button class="modal-btn edit" onclick="openEditModal('${data.id}')">✏️ Suggest Edit</button>
                 </div>
             `;
 
@@ -1488,6 +1694,92 @@
                 modal.style.display = 'none';
                 overlay.style.display = 'none';
             }, 300);
+        }
+
+                function openEditModal(memberId) {
+            const person = familyData.find(m => m.id === memberId);
+            if (!person) return;
+
+            document.getElementById('edit-target-id').value = memberId;
+            document.getElementById('edit-proposed-name').value = person.name || '';
+            document.getElementById('edit-proposed-spouse').value = person.spouse || '';
+            document.getElementById('edit-proposed-designation').value = person.designation || '';
+            document.getElementById('edit-proposed-bio').value = person.bio || '';
+            document.getElementById('edit-proposed-hobbies').value = person.hobbies || '';
+            document.getElementById('edit-proposed-funfact').value = person.funFact || '';
+            document.getElementById('edit-submitter').value = '';
+
+            const modal = document.getElementById('editModal');
+            const overlay = document.getElementById('editOverlay');
+            overlay.style.display = 'flex';
+            modal.style.display = 'block';
+            setTimeout(() => {
+                overlay.classList.add('show');
+                modal.classList.add('show');
+            }, 10);
+        }
+
+        function closeEditModal() {
+            const modal = document.getElementById('editModal');
+            const overlay = document.getElementById('editOverlay');
+            modal.classList.remove('show');
+            overlay.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                overlay.style.display = 'none';
+            }, 300);
+        }
+
+        async function submitEdit(event) {
+            event.preventDefault();
+
+            const targetId = document.getElementById('edit-target-id').value;
+            const target = familyData.find(m => m.id === targetId);
+            if (!target) {
+                showToast('❌ Member not found', 'error');
+                return;
+            }
+
+            const editRequest = {
+                id: 'edit_' + Date.now(),
+                status: 'pending',
+                type: 'edit',
+                targetId: targetId,
+                targetName: target.name || targetId,
+                name: document.getElementById('edit-proposed-name').value,
+                gender: target.gender || 'F',
+                parent: target.parent || '',
+                spouse: document.getElementById('edit-proposed-spouse').value || '',
+                designation: document.getElementById('edit-proposed-designation').value || '',
+                bio: document.getElementById('edit-proposed-bio').value || '',
+                hobbies: document.getElementById('edit-proposed-hobbies').value || '',
+                funFact: document.getElementById('edit-proposed-funfact').value || '',
+                originalName: target.name || '',
+                originalSpouse: target.spouse || '',
+                originalDesignation: target.designation || '',
+                originalBio: target.bio || '',
+                originalHobbies: target.hobbies || '',
+                originalFunFact: target.funFact || '',
+                submittedBy: document.getElementById('edit-submitter').value || 'Anonymous',
+                submittedAt: new Date().toISOString()
+            };
+
+            if (useFirestore) {
+                try {
+                    await db.collection('familyMembers').doc(editRequest.id).set(editRequest);
+                    familyData.push(editRequest);
+                    showToast('✅ Edit submitted! Waiting for admin approval.', 'success');
+                } catch (e) {
+                    showToast('❌ Error: ' + e.message, 'error');
+                    return;
+                }
+            } else {
+                familyData.push(editRequest);
+                showToast('📥 Edit saved locally. Admin will review.', 'success');
+            }
+
+            closeEditModal();
+            document.querySelector('#editModal form').reset();
         }
 
         async function submitMember(event) {
@@ -1637,12 +1929,18 @@
         }
 
         function showPending() {
-            const pending = familyData.filter(m => m.status === 'pending');
+            // This is now called when admin panel opens
+            // It populates both tabs
+            showPendingMembers();
+            showPendingEdits();
+        }
+
+        function showPendingMembers() {
+            const pending = familyData.filter(m => m.status === 'pending' && !m.type);
             const list = document.getElementById('pendingList');
-            const section = document.getElementById('pendingSection');
 
             if (pending.length === 0) {
-                list.innerHTML = '<div style="text-align:center;color:#999;padding:20px;">No pending submissions</div>';
+                list.innerHTML = '<div style="text-align:center;color:#999;padding:20px;">No pending new members</div>';
             } else {
                 list.innerHTML = pending.map(m => `
                     <div class="pending-item">
@@ -1657,10 +1955,111 @@
                     </div>
                 `).join('');
             }
-            section.style.display = 'block';
         }
 
-        function updatePendingCount() {
+        function showPendingEdits() {
+            const pendingEdits = familyData.filter(m => m.status === 'pending' && m.type === 'edit');
+            const list = document.getElementById('pendingEditsList');
+
+            if (pendingEdits.length === 0) {
+                list.innerHTML = '<div style="text-align:center;color:#999;padding:20px;">No pending edits</div>';
+                return;
+            }
+
+            list.innerHTML = pendingEdits.map(edit => {
+                const target = familyData.find(m => m.id === edit.targetId) || {};
+                const changedFields = [];
+
+                ['name', 'spouse', 'designation', 'bio', 'hobbies', 'funFact'].forEach(field => {
+                    const oldVal = target[field] || '';
+                    const newVal = edit[field] || '';
+                    if (oldVal !== newVal && (oldVal || newVal)) {
+                        changedFields.push({ field, oldVal, newVal });
+                    }
+                });
+
+                const diffRows = changedFields.map(f => `
+                    <tr>
+                        <td>${f.field}</td>
+                        <td><span class="diff-old">${f.oldVal || '(empty)'}</span></td>
+                        <td><span class="diff-new">${f.newVal || '(empty)'}</span></td>
+                    </tr>
+                `).join('');
+
+                const updateJson = {};
+                changedFields.forEach(f => { updateJson[f.field] = f.newVal; });
+                const jsonStr = JSON.stringify(updateJson, null, 2);
+
+                return `
+                    <div style="border:1px solid #eee;border-radius:10px;padding:12px;margin-bottom:12px;">
+                        <div class="edit-meta">
+                            <strong>Editing:</strong> ${edit.targetName || edit.targetId}<br>
+                            <strong>By:</strong> ${edit.submittedBy || 'Anonymous'} · ${new Date(edit.submittedAt).toLocaleDateString()}
+                        </div>
+                        <table class="diff-table">
+                            <tr><th>Field</th><th>Current</th><th>Proposed</th></tr>
+                            ${diffRows}
+                        </table>
+                        <div class="edit-actions">
+                            <button class="copy-btn" onclick="copyEditJson('${edit.id}')">📋 Copy JSON</button>
+                            <button class="done-btn" onclick="markEditDone('${edit.id}')">✓ Mark Done</button>
+                            <button class="reject-btn" onclick="rejectEdit('${edit.id}')">✗ Reject</button>
+                        </div>
+                        <div class="console-instructions" id="instr-${edit.id}" style="display:none;">
+                            <strong>📋 How to apply this edit:</strong><br>
+                            1. Copy the JSON below<br>
+                            2. Go to <a href="https://console.firebase.google.com/project/ialih-family-tree/firestore/data/~2FfamilyMembers~2F${edit.targetId}" target="_blank">Firebase Console → familyMembers → ${edit.targetId}</a><br>
+                            3. Click "Edit" and paste the JSON fields<br>
+                            4. Come back and click "Mark Done"<br>
+                            <div class="json-preview" id="json-${edit.id}">${jsonStr}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function switchAdminTab(tab) {
+            document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.admin-panel-content').forEach(p => p.style.display = 'none');
+            document.getElementById('tab-' + tab).classList.add('active');
+            document.getElementById('panel-' + tab).style.display = 'block';
+        }
+
+        function copyEditJson(editId) {
+            const edit = familyData.find(m => m.id === editId);
+            if (!edit) return;
+            const target = familyData.find(m => m.id === edit.targetId) || {};
+            const updateJson = {};
+            ['name', 'spouse', 'designation', 'bio', 'hobbies', 'funFact'].forEach(field => {
+                const oldVal = target[field] || '';
+                const newVal = edit[field] || '';
+                if (oldVal !== newVal) updateJson[field] = newVal;
+            });
+            navigator.clipboard.writeText(JSON.stringify(updateJson, null, 2)).then(() => {
+                showToast('📋 JSON copied! Paste into Firebase Console.', 'success');
+            });
+            document.getElementById('instr-' + editId).style.display = 'block';
+        }
+
+        async function markEditDone(editId) {
+            familyData = familyData.filter(m => m.id !== editId);
+            if (useFirestore) {
+                try { await db.collection('familyMembers').doc(editId).delete(); }
+                catch (e) { showToast('⚠️ Could not auto-delete. Please delete manually in Firebase Console.', 'warning'); }
+            }
+            showPendingEdits();
+            showToast('✅ Edit marked as done. Please delete the pending edit in Firebase Console if still there.', 'success');
+        }
+
+        async function rejectEdit(editId) {
+            familyData = familyData.filter(m => m.id !== editId);
+            if (useFirestore) {
+                try { await db.collection('familyMembers').doc(editId).delete(); }
+                catch (e) { showToast('⚠️ Could not auto-delete. Please delete manually in Firebase Console.', 'warning'); }
+            }
+            showPendingEdits();
+            showToast('❌ Edit rejected.', 'success');
+        }function updatePendingCount() {
             const pending = familyData.filter(m => m.status === 'pending').length;
             const btn = document.getElementById('pendingBtn');
             const count = document.getElementById('pendingCount');
@@ -1710,14 +2109,14 @@
             const wrapperW = wrapper.clientWidth;
             const wrapperH = wrapper.clientHeight;
 
-            const scale = Math.min(
-                (wrapperW - 40) / chartWidth,
-                (wrapperH - 40) / chartHeight,
-                0.9
+            let scale = Math.min(
+                (wrapperW - 60) / chartWidth,
+                (wrapperH - 60) / chartHeight
             );
+            scale = Math.max(0.55, Math.min(scale, 1.0));
 
             const tx = (wrapperW - chartWidth * scale) / 2;
-            const ty = 20;
+            const ty = 30;
 
             svg.transition().duration(600).call(
                 zoomBehavior.transform,
