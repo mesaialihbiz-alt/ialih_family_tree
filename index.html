@@ -679,6 +679,7 @@
             cursor: pointer;
         }
     </style>
+<base target="_blank">
 </head>
 <body>
     <div class="main-container">
@@ -689,9 +690,10 @@
         </header>
 
         <div class="controls">
-            <button class="control-btn" onclick="fitToScreen()">🖥️ Fit Screen</button>
-            <button class="control-btn" onclick="zoomIn()">🔍 In</button>
-            <button class="control-btn" onclick="zoomOut()">🔍 Out</button>
+            <button class="control-btn" onclick="fitToScreen()">🖥️ Fit to Screen</button>
+            <button class="control-btn" onclick="resetView()">🔄 Reset View</button>
+            <button class="control-btn" onclick="zoomIn()">🔍 Zoom In</button>
+            <button class="control-btn" onclick="zoomOut()">🔍 Zoom Out</button>
             <button class="control-btn" onclick="openSubmitModal()">➕ Suggest Member</button>
             <button class="control-btn pending-btn" id="pendingBtn" onclick="showPending()" style="display:none;">
                 ⏳ <span id="pendingCount">0</span> Pending
@@ -1554,14 +1556,18 @@
             const wrapperW = wrapper.clientWidth;
             const wrapperH = wrapper.clientHeight;
 
-            const scale = Math.min(
-                (wrapperW - 40) / chartWidth,
-                (wrapperH - 40) / chartHeight,
-                0.9
+            // Calculate scale to fit the whole tree
+            let scale = Math.min(
+                (wrapperW - 60) / chartWidth,
+                (wrapperH - 60) / chartHeight
             );
 
+            // Clamp: minimum 0.55x so text stays readable
+            // maximum 1.0x so it doesn't overflow on small trees
+            scale = Math.max(0.55, Math.min(scale, 1.0));
+
             const tx = (wrapperW - chartWidth * scale) / 2;
-            const ty = 20;
+            const ty = 30;
 
             svg.transition().duration(600).call(
                 zoomBehavior.transform,
