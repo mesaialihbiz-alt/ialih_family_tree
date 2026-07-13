@@ -5,13 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phawa Ialih Family Tree</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary: #1a1a2e;
             --secondary: #16213e;
             --accent-gold: #d4a574;
-            --accent-rose: #c9a0dc;
             --female-border: #e8a4c9;
             --female-bg: #fff5f8;
             --male-border: #6bb3d9;
@@ -19,6 +20,9 @@
             --line-color: #a08060;
             --bg-cream: #faf8f5;
             --bg-warm: #f5f0e8;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -100,10 +104,20 @@
             color: var(--primary);
             transition: all 0.3s ease;
         }
-        .control-btn:hover {
+        .control-btn:hover, .control-btn.active {
             background: var(--primary);
             color: white;
             border-color: var(--primary);
+        }
+        .control-btn.pending-btn {
+            background: var(--warning);
+            color: white;
+            border-color: var(--warning);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
         .legend {
             display: flex;
@@ -115,7 +129,7 @@
         .legend-dot.female { background: var(--female-border); }
         .legend-dot.male { background: var(--male-border); }
 
-        /* Chart area */
+        /* Chart */
         #chart-wrapper {
             flex: 1;
             overflow: auto;
@@ -126,7 +140,7 @@
         #chart-wrapper:active { cursor: grabbing; }
         #chart-wrapper svg { display: block; margin: 0 auto; }
 
-        /* Node styling */
+        /* Nodes */
         .node-group { cursor: pointer; }
         .node-card {
             fill: white;
@@ -147,6 +161,10 @@
         .node-card.male {
             fill: url(#maleGradient);
             stroke: var(--male-border);
+        }
+        .node-card.pending {
+            stroke: var(--warning) !important;
+            stroke-dasharray: 8,4;
         }
         .node-photo-circle {
             fill: #f0f0f0;
@@ -188,6 +206,13 @@
         .node-badge {
             font-family: 'Inter', sans-serif;
             font-size: 10px;
+            font-weight: 700;
+            fill: white;
+            pointer-events: none;
+        }
+        .pending-badge {
+            font-family: 'Inter', sans-serif;
+            font-size: 9px;
             font-weight: 700;
             fill: white;
             pointer-events: none;
@@ -369,6 +394,37 @@
             font-size: 0.8rem;
             font-weight: 500;
         }
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .modal-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .modal-btn.approve {
+            background: var(--success);
+            color: white;
+        }
+        .modal-btn.approve:hover { background: #219a52; }
+        .modal-btn.reject {
+            background: var(--danger);
+            color: white;
+        }
+        .modal-btn.reject:hover { background: #c0392b; }
+        .modal-btn.edit {
+            background: var(--accent-gold);
+            color: white;
+        }
+        .modal-btn.edit:hover { background: #b8956a; }
 
         /* Tooltip */
         .tooltip {
@@ -398,7 +454,46 @@
             line-height: 1.5;
         }
 
-        /* Admin */
+        /* Submit Modal */
+        .submit-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.3);
+            z-index: 600;
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: none;
+        }
+        .submit-modal.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+            display: block;
+        }
+        .submit-modal-header {
+            padding: 25px 25px 15px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 20px 20px 0 0;
+            color: white;
+            position: relative;
+        }
+        .submit-modal-header h3 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        .submit-modal-body {
+            padding: 20px 25px 25px;
+        }
+
+        /* Admin Panel */
         .admin-toggle {
             position: fixed;
             bottom: 20px;
@@ -424,7 +519,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             background: white;
-            padding: 30px;
+            padding: 25px;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.25);
             max-width: 500px;
@@ -476,6 +571,56 @@
             color: #999;
         }
 
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--primary);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            z-index: 1000;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            max-width: 300px;
+        }
+        .toast.show { transform: translateX(0); }
+        .toast.success { background: var(--success); }
+        .toast.error { background: var(--danger); }
+
+        /* Pending list in admin */
+        .pending-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 15px;
+        }
+        .pending-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.85rem;
+        }
+        .pending-item:last-child { border-bottom: none; }
+        .pending-item button {
+            padding: 4px 10px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .pending-item .approve-btn { background: var(--success); color: white; }
+        .pending-item .reject-btn { background: var(--danger); color: white; margin-left: 5px; }
+
         .scroll-hint {
             position: fixed;
             bottom: 75px;
@@ -490,8 +635,50 @@
             animation-delay: 4s;
         }
         @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+
+        /* Admin login prompt */
+        .admin-login-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 800;
+            justify-content: center;
+            align-items: center;
+        }
+        .admin-login-box {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 320px;
+            text-align: center;
+        }
+        .admin-login-box h3 {
+            font-family: 'Cinzel', serif;
+            margin-bottom: 15px;
+        }
+        .admin-login-box input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            text-align: center;
+            letter-spacing: 4px;
+            margin-bottom: 15px;
+        }
+        .admin-login-box button {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+        }
     </style>
-<base target="_blank">
 </head>
 <body>
     <div class="main-container">
@@ -505,7 +692,10 @@
             <button class="control-btn" onclick="fitToScreen()">🖥️ Fit Screen</button>
             <button class="control-btn" onclick="zoomIn()">🔍 In</button>
             <button class="control-btn" onclick="zoomOut()">🔍 Out</button>
-            <button class="control-btn" onclick="resetView()">↺ Reset</button>
+            <button class="control-btn" onclick="openSubmitModal()">➕ Suggest Member</button>
+            <button class="control-btn pending-btn" id="pendingBtn" onclick="showPending()" style="display:none;">
+                ⏳ <span id="pendingCount">0</span> Pending
+            </button>
             <div class="legend">
                 <span><span class="legend-dot female"></span>Female</span>
                 <span><span class="legend-dot male"></span>Male</span>
@@ -517,6 +707,18 @@
 
     <div class="scroll-hint">🖱️ Click cards for stories · Scroll/drag to explore</div>
     <div class="tooltip" id="tooltip"></div>
+    <div class="toast" id="toast"></div>
+
+    <!-- Admin PIN Login -->
+    <div class="admin-login-overlay" id="adminLoginOverlay">
+        <div class="admin-login-box">
+            <h3>🔐 Admin Access</h3>
+            <p style="font-size:0.8rem;color:#666;margin-bottom:15px;">Enter your admin PIN to manage the family tree</p>
+            <input type="password" id="adminPin" placeholder="••••" maxlength="6">
+            <button onclick="verifyAdminPin()">Unlock</button>
+            <p style="font-size:0.75rem;color:#999;margin-top:10px;">Hint: Default PIN is <code>123456</code> — change this in the code!</p>
+        </div>
+    </div>
 
     <!-- Profile Modal -->
     <div class="modal-overlay" id="modalOverlay" onclick="closeModal()"></div>
@@ -527,93 +729,202 @@
             <div class="modal-name" id="modalName">Name</div>
             <div class="modal-designation" id="modalDesignation">Designation</div>
         </div>
-        <div class="modal-body" id="modalBody">
-            <!-- Content injected by JS -->
+        <div class="modal-body" id="modalBody"></div>
+    </div>
+
+    <!-- Submit Member Modal -->
+    <div class="modal-overlay" id="submitOverlay" onclick="closeSubmitModal()"></div>
+    <div class="submit-modal" id="submitModal">
+        <div class="submit-modal-header">
+            <button class="modal-close" onclick="closeSubmitModal()" style="top:10px;right:15px;">&times;</button>
+            <h3>➕ Suggest a New Family Member</h3>
+            <p style="font-size:0.8rem;opacity:0.8;margin-top:5px;">Your submission will be reviewed before appearing on the tree</p>
+        </div>
+        <div class="submit-modal-body">
+            <form onsubmit="submitMember(event)">
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="sub-name" required placeholder="e.g., Smti Firstname Phawa">
+                </div>
+                <div class="form-group">
+                    <label>Gender *</label>
+                    <select id="sub-gender" required>
+                        <option value="F">Female ♀</option>
+                        <option value="M">Male ♂</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Mother / Parent *</label>
+                    <select id="sub-parent" required></select>
+                </div>
+                <div class="form-group">
+                    <label>Spouse Name</label>
+                    <input type="text" id="sub-spouse" placeholder="e.g., Shri Partner Name">
+                </div>
+                <div class="form-group">
+                    <label>Designation / Title</label>
+                    <input type="text" id="sub-designation" placeholder="e.g., Aunt, Uncle, Cousin">
+                </div>
+                <div class="form-group">
+                    <label>Bio / Story</label>
+                    <textarea id="sub-bio" placeholder="Tell us about this person..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Hobbies & Interests</label>
+                    <input type="text" id="sub-hobbies" placeholder="e.g., Cooking, singing, gardening">
+                </div>
+                <div class="form-group">
+                    <label>Fun Fact</label>
+                    <input type="text" id="sub-funfact" placeholder="Something unique about them">
+                </div>
+                <div class="form-group">
+                    <label>Your Name (optional)</label>
+                    <input type="text" id="sub-submitter" placeholder="Who is submitting this?">
+                </div>
+                <button type="submit" class="btn-submit">📤 Submit for Review</button>
+            </form>
         </div>
     </div>
 
     <!-- Admin Panel -->
-    <button class="admin-toggle" onclick="toggleAdmin()">⚙️</button>
-    <div class="overlay" id="overlay" onclick="toggleAdmin()"></div>
+    <button class="admin-toggle" onclick="openAdminLogin()">⚙️</button>
+    <div class="overlay" id="overlay" onclick="closeAdminPanel()"></div>
     <div id="admin-panel">
-        <button class="close-btn" onclick="toggleAdmin()">&times;</button>
-        <h3 style="font-family:Cinzel,serif;margin-bottom:15px;">✏️ Edit Family Member</h3>
-        <form id="member-form" onsubmit="saveMember(event)">
+        <button class="close-btn" onclick="closeAdminPanel()">&times;</button>
+        <h3 style="font-family:Cinzel,serif;margin-bottom:15px;">⚙️ Admin Dashboard</h3>
+
+        <div id="pendingSection" style="display:none;">
+            <h4 style="font-size:0.9rem;margin-bottom:10px;color:var(--warning);">⏳ Pending Approvals</h4>
+            <div class="pending-list" id="pendingList"></div>
+        </div>
+
+        <h4 style="font-size:0.9rem;margin:15px 0 10px;">✏️ Edit Existing Member</h4>
+        <form id="edit-form" onsubmit="saveEdit(event)">
             <div class="form-group">
-                <label>Select Person to Edit</label>
-                <select id="edit-select" onchange="loadPersonForEdit()" required>
+                <label>Select Person</label>
+                <select id="edit-select" onchange="loadForEdit()" required>
                     <option value="">-- Choose someone --</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>Full Name</label>
+                <label>Name</label>
                 <input type="text" id="edit-name" required>
             </div>
             <div class="form-group">
                 <label>Gender</label>
                 <select id="edit-gender">
-                    <option value="F">Female ♀</option>
-                    <option value="M">Male ♂</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Spouse Name</label>
-                <input type="text" id="edit-spouse" placeholder="e.g., Shri Surname">
-            </div>
-            <div class="form-group">
-                <label>Designation / Title</label>
-                <input type="text" id="edit-designation" placeholder="e.g., Grandmother, Uncle">
-            </div>
-            <div class="form-group">
-                <label>Bio / Story</label>
-                <textarea id="edit-bio" placeholder="Tell their story..."></textarea>
-            </div>
-            <div class="form-group">
-                <label>Hobbies & Interests</label>
-                <input type="text" id="edit-hobbies" placeholder="e.g., Cooking, singing, gardening">
-            </div>
-            <div class="form-group">
-                <label>Fun Fact</label>
-                <input type="text" id="edit-funfact" placeholder="Something unique about them">
-            </div>
-            <div class="form-group">
-                <label>Photo URL (optional)</label>
-                <input type="text" id="edit-photo" placeholder="https://...">
-            </div>
-            <button type="submit" class="btn-submit">💾 Save Changes & Download JSON</button>
-        </form>
-        <hr style="margin:20px 0;border:none;border-top:1px solid #eee;">
-        <h3 style="font-family:Cinzel,serif;margin-bottom:15px;font-size:1rem;">➕ Add New Member</h3>
-        <form id="add-form" onsubmit="addNewMember(event)">
-            <div class="form-group">
-                <label>Full Name</label>
-                <input type="text" id="new-name" required placeholder="e.g., Smti Firstname Phawa">
-            </div>
-            <div class="form-group">
-                <label>Gender</label>
-                <select id="new-gender">
                     <option value="F">Female</option>
                     <option value="M">Male</option>
                 </select>
             </div>
             <div class="form-group">
-                <label>Parent</label>
-                <select id="new-parent" required></select>
+                <label>Spouse</label>
+                <input type="text" id="edit-spouse">
             </div>
-            <button type="submit" class="btn-submit">➕ Add Member</button>
+            <div class="form-group">
+                <label>Designation</label>
+                <input type="text" id="edit-designation">
+            </div>
+            <div class="form-group">
+                <label>Bio</label>
+                <textarea id="edit-bio"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Hobbies</label>
+                <input type="text" id="edit-hobbies">
+            </div>
+            <div class="form-group">
+                <label>Fun Fact</label>
+                <input type="text" id="edit-funfact">
+            </div>
+            <button type="submit" class="btn-submit">💾 Save Changes</button>
         </form>
     </div>
 
     <script>
-        if (typeof d3 === 'undefined') {
-            document.getElementById('chart-wrapper').innerHTML = 
-                '<div style="text-align:center;padding:50px;color:red;"><h3>Error: D3.js failed to load</h3></div>';
-            throw new Error('D3 not loaded');
+        // ===== FIREBASE CONFIG (REAL) =====
+        const firebaseConfig = {
+            apiKey: "AIzaSyAPDQCDsHYQbr00kwqE-xTVvxCNIdFYfxc",
+            authDomain: "ialih-family-tree.firebaseapp.com",
+            projectId: "ialih-family-tree",
+            storageBucket: "ialih-family-tree.firebasestorage.app",
+            messagingSenderId: "78958530371",
+            appId: "1:78958530371:web:9840f54c3c5baef12429f6",
+            measurementId: "G-W9DJ9PXEZW"
+        };
+
+        // Initialize Firebase
+        let db = null;
+        let useFirestore = false;
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            useFirestore = true;
+            console.log("✅ Firebase connected");
+        } catch (e) {
+            console.log("⚠️ Firebase error:", e.message);
+            useFirestore = false;
         }
 
+        // ===== ADMIN PIN (CHANGE THIS!) =====
+        const ADMIN_PIN = "123456"; // ⚠️ CHANGE THIS TO YOUR SECRET PIN
+        let isAdmin = false;
+
+        function openAdminLogin() {
+            // Check if already authenticated
+            if (localStorage.getItem('ialih_admin') === 'true') {
+                isAdmin = true;
+                toggleAdminPanel(true);
+                return;
+            }
+            document.getElementById('adminLoginOverlay').style.display = 'flex';
+            document.getElementById('adminPin').value = '';
+            document.getElementById('adminPin').focus();
+        }
+
+        function verifyAdminPin() {
+            const pin = document.getElementById('adminPin').value;
+            if (pin === ADMIN_PIN) {
+                isAdmin = true;
+                localStorage.setItem('ialih_admin', 'true');
+                document.getElementById('adminLoginOverlay').style.display = 'none';
+                toggleAdminPanel(true);
+                showToast("🔓 Admin access granted!", "success");
+            } else {
+                showToast("❌ Incorrect PIN", "error");
+                document.getElementById('adminPin').value = '';
+            }
+        }
+
+        // Allow Enter key to submit PIN
+        document.getElementById('adminPin').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') verifyAdminPin();
+        });
+
+        function toggleAdminPanel(show) {
+            const panel = document.getElementById('admin-panel');
+            const overlay = document.getElementById('overlay');
+            if (show) {
+                panel.style.display = 'block';
+                overlay.style.display = 'block';
+                populateSelects();
+                updatePendingCount();
+                showPending();
+            } else {
+                panel.style.display = 'none';
+                overlay.style.display = 'none';
+            }
+        }
+
+        function closeAdminPanel() {
+            toggleAdminPanel(false);
+        }
+
+        // ===== DATA =====
         let familyData = [];
         let svg, g, zoomBehavior;
         let chartWidth, chartHeight;
+        let currentProfileId = null;
 
         const generationLabels = {
             0: "👑 Root Ancestor",
@@ -624,26 +935,51 @@
             5: "Current Generation"
         };
 
+        // ===== LOAD DATA =====
         async function loadTree() {
+            if (useFirestore) {
+                try {
+                    const snapshot = await db.collection("familyMembers").get();
+                    familyData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    if (familyData.length === 0) {
+                        console.log("Firestore empty, falling back to JSON...");
+                        await loadFromJSON();
+                    } else {
+                        console.log(`Loaded ${familyData.length} members from Firestore`);
+                    }
+                } catch (e) {
+                    console.log("Firestore failed, using JSON:", e.message);
+                    await loadFromJSON();
+                }
+            } else {
+                await loadFromJSON();
+            }
+            renderFlowchart();
+            populateSelects();
+            updatePendingCount();
+        }
+
+        async function loadFromJSON() {
             try {
                 const response = await fetch('./familyData.json');
                 if (!response.ok) throw new Error('HTTP ' + response.status);
                 familyData = await response.json();
-                renderFlowchart();
-                populateSelects();
+                console.log(`Loaded ${familyData.length} members from JSON`);
             } catch (err) {
-                console.error("Error:", err);
+                console.error("Error loading JSON:", err);
                 document.getElementById('chart-wrapper').innerHTML = 
-                    '<div style="text-align:center;padding:50px;color:#999;"><h3>Error loading data</h3><p>' + err.message + '</p></div>';
+                    '<div style="text-align:center;padding:50px;color:#999;"><h3>Error loading data</h3><p>Please check your internet connection and refresh.</p></div>';
             }
         }
 
+        // ===== RENDER =====
         function renderFlowchart() {
             const container = document.getElementById('chart-wrapper');
             container.innerHTML = '';
 
+            const approvedData = familyData.filter(d => d.status === 'approved');
             const dataMap = new Map();
-            familyData.forEach(d => {
+            approvedData.forEach(d => {
                 dataMap.set(d.id, { ...d, children: [] });
             });
 
@@ -659,7 +995,10 @@
                 }
             });
 
-            if (!rootData) return;
+            if (!rootData) {
+                container.innerHTML = '<div style="text-align:center;padding:50px;"><h3>No approved members yet</h3></div>';
+                return;
+            }
 
             const cardWidth = 260;
             const cardHeight = 95;
@@ -774,7 +1113,7 @@
                 .on("mouseleave", hideTooltip)
                 .on("click", (event, d) => openProfile(d.data));
 
-            // Card background
+            // Card
             node.append("rect")
                 .attr("class", d => `node-card ${d.data.gender}`)
                 .attr("width", cardWidth)
@@ -782,21 +1121,20 @@
                 .attr("rx", 16)
                 .attr("ry", 16);
 
-            // Avatar circle
+            // Avatar
             node.append("circle")
                 .attr("class", "node-photo-circle")
                 .attr("cx", 35)
                 .attr("cy", cardHeight / 2)
                 .attr("r", 22);
 
-            // Avatar initial
             node.append("text")
                 .attr("class", "node-photo-text")
                 .attr("x", 35)
                 .attr("y", cardHeight / 2 + 2)
                 .text(d => d.data.name.charAt(0));
 
-            // Gender icon
+            // Gender
             node.append("text")
                 .attr("x", 68)
                 .attr("y", 22)
@@ -841,7 +1179,7 @@
                 .attr("text-anchor", "middle")
                 .text("👆 Click for story");
 
-            // Child count badge
+            // Child count
             node.filter(d => d.children && d.children.length > 0)
                 .append("circle")
                 .attr("cx", cardWidth - 18)
@@ -863,6 +1201,7 @@
 
         // ===== PROFILE MODAL =====
         function openProfile(data) {
+            currentProfileId = data.id;
             const modal = document.getElementById('profileModal');
             const overlay = document.getElementById('modalOverlay');
             const header = document.getElementById('modalHeader');
@@ -870,7 +1209,7 @@
             header.className = 'modal-header ' + (data.gender === 'F' ? 'female' : 'male');
             document.getElementById('modalAvatar').textContent = data.name.charAt(0);
             document.getElementById('modalName').textContent = data.name;
-            document.getElementById('modalDesignation').textContent = data.designation || (data.gender === 'F' ? 'Family Member' : 'Family Member');
+            document.getElementById('modalDesignation').textContent = data.designation || 'Family Member';
 
             let bodyHTML = '';
 
@@ -912,7 +1251,7 @@
             }
 
             // Find children
-            const children = familyData.filter(m => m.parent === data.id);
+            const children = familyData.filter(m => m.parent === data.id && m.status === 'approved');
             if (children.length > 0) {
                 bodyHTML += `
                     <div class="modal-section">
@@ -923,6 +1262,13 @@
                     </div>
                 `;
             }
+
+            // Admin actions (only show edit button)
+            bodyHTML += `
+                <div class="modal-actions">
+                    <button class="modal-btn edit" onclick="editFromModal()">✏️ Edit</button>
+                </div>
+            `;
 
             document.getElementById('modalBody').innerHTML = bodyHTML;
 
@@ -945,6 +1291,242 @@
             }, 300);
         }
 
+        function editFromModal() {
+            closeModal();
+            openAdminLogin();
+            setTimeout(() => {
+                document.getElementById('edit-select').value = currentProfileId;
+                loadForEdit();
+            }, 500);
+        }
+
+        // ===== SUBMIT MODAL =====
+        function openSubmitModal() {
+            const modal = document.getElementById('submitModal');
+            const overlay = document.getElementById('submitOverlay');
+
+            // Populate parent dropdown
+            const parentSelect = document.getElementById('sub-parent');
+            parentSelect.innerHTML = '<option value="">-- Select Parent --</option>';
+            familyData.filter(m => m.status === 'approved').forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m.id;
+                opt.textContent = m.name;
+                parentSelect.appendChild(opt);
+            });
+
+            overlay.style.display = 'flex';
+            modal.style.display = 'block';
+            setTimeout(() => {
+                overlay.classList.add('show');
+                modal.classList.add('show');
+            }, 10);
+        }
+
+        function closeSubmitModal() {
+            const modal = document.getElementById('submitModal');
+            const overlay = document.getElementById('submitOverlay');
+            modal.classList.remove('show');
+            overlay.classList.remove('show');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                overlay.style.display = 'none';
+            }, 300);
+        }
+
+        async function submitMember(event) {
+            event.preventDefault();
+
+            const newMember = {
+                id: 'pending_' + Date.now(),
+                name: document.getElementById('sub-name').value,
+                gender: document.getElementById('sub-gender').value,
+                parent: document.getElementById('sub-parent').value,
+                spouse: document.getElementById('sub-spouse').value || "",
+                designation: document.getElementById('sub-designation').value || "",
+                bio: document.getElementById('sub-bio').value || "",
+                hobbies: document.getElementById('sub-hobbies').value || "",
+                funFact: document.getElementById('sub-funfact').value || "",
+                status: "pending",
+                submittedBy: document.getElementById('sub-submitter').value || "Anonymous",
+                submittedAt: new Date().toISOString()
+            };
+
+            if (useFirestore) {
+                try {
+                    await db.collection("familyMembers").doc(newMember.id).set(newMember);
+                    familyData.push(newMember);
+                    showToast("✅ Submitted! Waiting for approval.", "success");
+                    updatePendingCount();
+                } catch (e) {
+                    showToast("❌ Error: " + e.message, "error");
+                    return;
+                }
+            } else {
+                // Fallback: add to local data and download JSON for manual upload
+                familyData.push(newMember);
+                downloadJSON();
+                showToast("📥 JSON downloaded! Send to admin for approval.", "success");
+            }
+
+            closeSubmitModal();
+            document.querySelector('#submitModal form').reset();
+        }
+
+        // ===== ADMIN PANEL =====
+        function populateSelects() {
+            const editSelect = document.getElementById('edit-select');
+            const subParent = document.getElementById('sub-parent');
+
+            editSelect.innerHTML = '<option value="">-- Choose someone --</option>';
+
+            familyData.forEach(m => {
+                const opt1 = document.createElement('option');
+                opt1.value = m.id;
+                opt1.textContent = m.name + (m.status === 'pending' ? ' ⏳' : '');
+                editSelect.appendChild(opt1);
+            });
+        }
+
+        function loadForEdit() {
+            const id = document.getElementById('edit-select').value;
+            if (!id) return;
+
+            const person = familyData.find(m => m.id === id);
+            if (!person) return;
+
+            document.getElementById('edit-name').value = person.name || '';
+            document.getElementById('edit-gender').value = person.gender || 'F';
+            document.getElementById('edit-spouse').value = person.spouse || '';
+            document.getElementById('edit-designation').value = person.designation || '';
+            document.getElementById('edit-bio').value = person.bio || '';
+            document.getElementById('edit-hobbies').value = person.hobbies || '';
+            document.getElementById('edit-funfact').value = person.funFact || '';
+        }
+
+        async function saveEdit(event) {
+            event.preventDefault();
+            const id = document.getElementById('edit-select').value;
+            if (!id) { showToast("Select a person first!", "error"); return; }
+
+            const idx = familyData.findIndex(m => m.id === id);
+            if (idx === -1) return;
+
+            familyData[idx].name = document.getElementById('edit-name').value;
+            familyData[idx].gender = document.getElementById('edit-gender').value;
+            familyData[idx].spouse = document.getElementById('edit-spouse').value;
+            familyData[idx].designation = document.getElementById('edit-designation').value;
+            familyData[idx].bio = document.getElementById('edit-bio').value;
+            familyData[idx].hobbies = document.getElementById('edit-hobbies').value;
+            familyData[idx].funFact = document.getElementById('edit-funfact').value;
+            familyData[idx].status = "approved";
+
+            if (useFirestore) {
+                try {
+                    await db.collection("familyMembers").doc(id).set(familyData[idx]);
+                    showToast("✅ Saved to Firestore!", "success");
+                } catch (e) {
+                    showToast("❌ Error: " + e.message, "error");
+                    return;
+                }
+            } else {
+                downloadJSON();
+                showToast("📥 JSON downloaded! Upload to GitHub.", "success");
+            }
+
+            renderFlowchart();
+            populateSelects();
+            updatePendingCount();
+            closeAdminPanel();
+        }
+
+        async function approveMember(id) {
+            const idx = familyData.findIndex(m => m.id === id);
+            if (idx === -1) return;
+
+            familyData[idx].status = "approved";
+
+            if (useFirestore) {
+                try {
+                    await db.collection("familyMembers").doc(id).update({ status: "approved" });
+                } catch (e) {
+                    showToast("❌ Error: " + e.message, "error");
+                    return;
+                }
+            }
+
+            renderFlowchart();
+            populateSelects();
+            updatePendingCount();
+            showPending();
+            showToast("✅ Approved!", "success");
+        }
+
+        async function rejectMember(id) {
+            if (useFirestore) {
+                try {
+                    await db.collection("familyMembers").doc(id).delete();
+                } catch (e) {
+                    showToast("❌ Error: " + e.message, "error");
+                    return;
+                }
+            }
+            familyData = familyData.filter(m => m.id !== id);
+
+            renderFlowchart();
+            populateSelects();
+            updatePendingCount();
+            showPending();
+            showToast("❌ Rejected and removed.", "success");
+        }
+
+        function showPending() {
+            const pending = familyData.filter(m => m.status === 'pending');
+            const list = document.getElementById('pendingList');
+            const section = document.getElementById('pendingSection');
+
+            if (pending.length === 0) {
+                list.innerHTML = '<div style="text-align:center;color:#999;padding:20px;">No pending submissions</div>';
+            } else {
+                list.innerHTML = pending.map(m => `
+                    <div class="pending-item">
+                        <div>
+                            <strong>${m.name}</strong><br>
+                            <small style="color:#999;">By: ${m.submittedBy || 'Anonymous'}</small>
+                        </div>
+                        <div>
+                            <button class="approve-btn" onclick="approveMember('${m.id}')">✓</button>
+                            <button class="reject-btn" onclick="rejectMember('${m.id}')">✗</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            section.style.display = 'block';
+        }
+
+        function updatePendingCount() {
+            const pending = familyData.filter(m => m.status === 'pending').length;
+            const btn = document.getElementById('pendingBtn');
+            const count = document.getElementById('pendingCount');
+
+            if (pending > 0) {
+                count.textContent = pending;
+                btn.style.display = 'inline-block';
+            } else {
+                btn.style.display = 'none';
+            }
+        }
+
+        function downloadJSON() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(familyData, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", "familyData.json");
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
+
         // ===== TOOLTIP =====
         function showTooltip(event, d) {
             const tooltip = document.getElementById('tooltip');
@@ -965,7 +1547,7 @@
             document.getElementById('tooltip').classList.remove('show');
         }
 
-        // ===== ZOOM & PAN =====
+        // ===== ZOOM =====
         function fitToScreen() {
             if (!svg) return;
             const wrapper = document.getElementById('chart-wrapper');
@@ -999,121 +1581,30 @@
             fitToScreen();
         }
 
-        // ===== ADMIN PANEL =====
-        function populateSelects() {
-            const editSelect = document.getElementById('edit-select');
-            const parentSelect = document.getElementById('new-parent');
-
-            editSelect.innerHTML = '<option value="">-- Choose someone --</option>';
-            parentSelect.innerHTML = '<option value="">-- Select Parent --</option>';
-
-            familyData.forEach(m => {
-                const opt1 = document.createElement('option');
-                opt1.value = m.id;
-                opt1.textContent = m.name;
-                editSelect.appendChild(opt1);
-
-                const opt2 = document.createElement('option');
-                opt2.value = m.id;
-                opt2.textContent = m.name;
-                parentSelect.appendChild(opt2);
-            });
+        // ===== UI =====
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type;
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => toast.classList.remove('show'), 4000);
         }
 
-        function loadPersonForEdit() {
-            const id = document.getElementById('edit-select').value;
-            if (!id) return;
-
-            const person = familyData.find(m => m.id === id);
-            if (!person) return;
-
-            document.getElementById('edit-name').value = person.name || '';
-            document.getElementById('edit-gender').value = person.gender || 'F';
-            document.getElementById('edit-spouse').value = person.spouse || '';
-            document.getElementById('edit-designation').value = person.designation || '';
-            document.getElementById('edit-bio').value = person.bio || '';
-            document.getElementById('edit-hobbies').value = person.hobbies || '';
-            document.getElementById('edit-funfact').value = person.funFact || '';
-            document.getElementById('edit-photo').value = person.photo || '';
-        }
-
-        function saveMember(event) {
-            event.preventDefault();
-            const id = document.getElementById('edit-select').value;
-            if (!id) { alert('Please select a person to edit!'); return; }
-
-            const idx = familyData.findIndex(m => m.id === id);
-            if (idx === -1) return;
-
-            familyData[idx].name = document.getElementById('edit-name').value;
-            familyData[idx].gender = document.getElementById('edit-gender').value;
-            familyData[idx].spouse = document.getElementById('edit-spouse').value;
-            familyData[idx].designation = document.getElementById('edit-designation').value;
-            familyData[idx].bio = document.getElementById('edit-bio').value;
-            familyData[idx].hobbies = document.getElementById('edit-hobbies').value;
-            familyData[idx].funFact = document.getElementById('edit-funfact').value;
-            familyData[idx].photo = document.getElementById('edit-photo').value;
-
-            downloadJSON();
-            renderFlowchart();
-            populateSelects();
-            toggleAdmin();
-            alert("✅ Changes saved! familyData.json downloaded. Upload to GitHub to update the site.");
-        }
-
-        function addNewMember(event) {
-            event.preventDefault();
-            const name = document.getElementById('new-name').value;
-            const gender = document.getElementById('new-gender').value;
-            const parent = document.getElementById('new-parent').value;
-
-            if (!parent) { alert('Please select a parent!'); return; }
-
-            const id = name.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 15) + Math.floor(Math.random() * 1000);
-            const newMember = { 
-                id, name, gender, parent, 
-                spouse: "", 
-                bio: "", 
-                hobbies: "", 
-                designation: "", 
-                funFact: "" 
-            };
-            familyData.push(newMember);
-
-            downloadJSON();
-            renderFlowchart();
-            populateSelects();
-            document.getElementById('add-form').reset();
-            alert("✅ New member added! familyData.json downloaded. Upload to GitHub to update.");
-        }
-
-        function downloadJSON() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(familyData, null, 2));
-            const downloadAnchor = document.createElement('a');
-            downloadAnchor.setAttribute("href", dataStr);
-            downloadAnchor.setAttribute("download", "familyData.json");
-            document.body.appendChild(downloadAnchor);
-            downloadAnchor.click();
-            downloadAnchor.remove();
-        }
-
-        function toggleAdmin() {
-            const panel = document.getElementById('admin-panel');
-            const overlay = document.getElementById('overlay');
-            const isOpen = panel.style.display === 'block';
-            panel.style.display = isOpen ? 'none' : 'block';
-            overlay.style.display = isOpen ? 'none' : 'block';
-        }
-
-        // Keyboard shortcuts
+        // Keyboard
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closeModal();
+            if (e.key === 'Escape') {
+                closeModal();
+                closeSubmitModal();
+                closeAdminPanel();
+                document.getElementById('adminLoginOverlay').style.display = 'none';
+            }
         });
 
         window.addEventListener('resize', () => {
             setTimeout(fitToScreen, 100);
         });
 
+        // Start
         loadTree();
     </script>
 </body>
